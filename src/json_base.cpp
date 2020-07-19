@@ -1,14 +1,15 @@
 #include <iostream>
 #include <utility>
 #include <fstream>
+#include <sstream>
 #include <json_cpp/json_base.h>
 
 
 using namespace std;
 namespace json_cpp {
 
-    std::istream &operator>>(istream &i, Json_base &o) {
-        o.json_parse(i);
+    std::istream &operator>>(istream &i, Json_base &j) {
+        j.json_parse(i);
         return i;
     }
 
@@ -31,5 +32,31 @@ namespace json_cpp {
         if (!file.good()) return false;
         json_write(file);
         return true;
+    }
+
+    std::string &operator>>(string &i, Json_base &j) {
+        std::stringstream ss(i);
+        ss >> j;
+        i = ss.str();
+        return i;
+    }
+
+    std::string &operator<<(string &o, const Json_base &j) {
+        std::stringstream ss(o);
+        ss << j;
+        o = ss.str();
+        return o;
+    }
+
+    char *operator>>(char *s, Json_base &j) {
+        string ss(s);
+        ss>>j;
+        return s;
+    }
+
+    const char *operator>>(const char *s, Json_base &j) {
+        string ss(s);
+        ss>>j;
+        return s;
     }
 }
