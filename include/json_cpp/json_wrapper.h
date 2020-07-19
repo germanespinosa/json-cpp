@@ -5,7 +5,7 @@
 #include <memory>
 #include <optional>
 
-#define Json_wrap(X) std::move(json_cpp::Json_wrapper<decltype(X)>(X).get_unique_ptr())
+#define Json_wrap(X) std::move(json_cpp::Json_wrapper<std::remove_const<decltype(X)>::type>(X).get_unique_ptr())
 
 namespace json_cpp {
 
@@ -24,13 +24,17 @@ namespace json_cpp {
             auto &r = _value.value().get();
             if constexpr (std::is_same_v<T, std::string>) {
                 r = Json_util::read_string(i);
+            } else if constexpr (std::is_enum<T>::value) {
+                int ev;
+                i >> ev;
+                r = (T) ev;
             } else {
                 Json_util::skip_blanks(i);
                 i >> r;
             }
         }
         void json_write(std::ostream &o) const override{
-            auto &r = _cvalue.get();
+            const auto &r = _cvalue.get();
             if constexpr (std::is_same_v<T, std::string>) {
                 o << '"' << r << '"';
             } else {

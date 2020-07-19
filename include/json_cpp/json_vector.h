@@ -3,15 +3,6 @@
 namespace json_cpp {
     template<class T>
     struct Json_vector : Json_base, std::vector<T> {
-//        static_assert(std::is_base_of<Json_base, T>::value ||
-//                      std::is_same_v < T, bool > ||
-//                                          std::is_same_v < T, int > ||
-//                                                              std::is_same_v < T, unsigned int > ||
-//                                                                                  std::is_same_v < T, double > ||
-//                                                                                                      std::is_same_v <
-//                                                                                                      T, std::string > ,
-//                      "Vector item type must derive from Json_base");
-
         void json_parse(std::istream &i) override {
             if (Json_util::skip_blanks(i) != '[') throw std::logic_error("format error");
             Json_util::discard(i);

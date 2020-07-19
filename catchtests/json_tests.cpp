@@ -20,6 +20,38 @@ TEST_CASE("basic wrapper"){
     CHECK(r=="25");
 }
 
+TEST_CASE("basic const wrapper bool"){
+    const bool v = false;
+    auto i = json_cpp::Json_wrapper<bool>(v);
+
+    stringstream o;
+    o << i;
+    string r;
+    o >> r;
+    CHECK(r=="0");
+
+    string s = "1";
+    stringstream ist(s);
+    CHECK_THROWS(ist >> i);
+}
+
+TEST_CASE("basic enum wrapper"){
+    enum Enum{
+        a,b,c
+    };
+    Enum v = b;
+    auto i = json_cpp::Json_wrapper<Enum>(v);
+    stringstream o;
+    o << i;
+    string r;
+    o >> r;
+    CHECK(r=="1");
+    string s = "2";
+    stringstream ist(s);
+    ist >> i;
+    CHECK(v==Enum::c);
+}
+
 
 TEST_CASE("basic wrapper string"){
     string v = "hello";
