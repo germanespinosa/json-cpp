@@ -1,0 +1,224 @@
+#include<catch.h>
+#include<json_cpp.h>
+#include<iostream>
+#include<sstream>
+
+using namespace json_cpp;
+using namespace std;
+
+TEST_CASE("basic wrapper"){
+    int v = 50;
+    Json_wrapper<int> i(v);
+    string s = "25";
+    stringstream ist(s);
+    ist >> i;
+    stringstream o;
+    o << i;
+    string r;
+    o >> r;
+    CHECK(v==25);
+    CHECK(r=="25");
+}
+
+
+TEST_CASE("basic wrapper string"){
+    string v = "hello";
+    Json_wrapper<string> i(v);
+    string s = "\"bye\"";
+    stringstream ist(s);
+    ist >> i;
+    stringstream o;
+    o << i;
+    string r;
+    o >> r;
+    CHECK(v=="bye");
+    CHECK(r=="\"bye\"");
+}
+
+TEST_CASE("json builder"){
+    int i = 10;
+    string s = "hello";
+    Json_builder jb;
+    jb.json_add_member("i",true,Json_wrap(i));
+    jb.json_add_member("s",true,Json_wrap(s));
+    string json = "{\"i\":20,\"s\":\"bye\"}";
+    stringstream ist(json);
+    ist >> jb;
+    CHECK(i==20);
+    CHECK(s=="bye");
+    stringstream o;
+    o << jb;
+    string r;
+    o >> r;
+    CHECK(r==json);
+
+}
+
+
+TEST_CASE("json object"){
+    struct Test_json_object: Json_object {
+        Test_json_object(int i, string s): i(i), s(s) {}
+        int i;
+        string s;
+        Json_set_builder({
+                             Json_add_member(i,true);
+                             Json_add_member(s,true);
+                         })
+    };
+    Test_json_object tjo {1,"hello"};
+    string json = "{\"i\":20,\"s\":\"bye\"}";
+    stringstream ist(json);
+    ist >> tjo;
+    stringstream o;
+    o << tjo;
+    string r;
+    o >> r;
+    CHECK(r==json);
+    const Test_json_object tjo2{1,"hello"};
+    stringstream o2;
+    o2 << tjo2;
+    string r2;
+    o2 >> r2;
+    CHECK(r2=="{\"i\":1,\"s\":\"hello\"}");
+}
+
+TEST_CASE("json nested object"){
+    struct Test_member: Json_object {
+        Test_member(int i, string s): i(i), s(s) {}
+        int i;
+        string s;
+        Json_set_builder({
+            Json_add_member(i,true);
+            Json_add_member(s,true);
+        })
+    };
+    struct Test_json_object: Json_object {
+        Test_json_object(int i, string s, Test_member m): i(i), s(s), m(m) {}
+        int i;
+        string s;
+        Test_member m;
+        Json_set_builder({
+                             Json_add_member(i,true);
+                             Json_add_member(s,true);
+                             Json_add_member(m,true);
+                         })
+    };
+    Test_member tm {20,"bye"};
+    Test_json_object tjo {1,"hello", {20,"bye"}};
+    string json = "{\"i\":20,\"s\":\"bye\",\"m\":{\"i\":200,\"s\":\"hello\"}}";
+    stringstream ist(json);
+    ist >> tjo;
+    stringstream o;
+    o << tjo;
+    string r;
+    o >> r;
+    CHECK(r==json);
+}
+
+TEST_CASE("int list"){
+    Json_vector<int> i;
+    i.push_back(1);
+    i.push_back(2);
+    i.push_back(3);
+    string json = "[4,5,6]";
+    stringstream ist(json);
+    ist >> i;
+    stringstream o;
+    o << i;
+    string r;
+    o >> r;
+    CHECK(r==json);
+}
+
+TEST_CASE("double list"){
+    Json_vector<double> i;
+    i.push_back(-1.5);
+    i.push_back(2.5);
+    i.push_back(3.5);
+    string json = "[-4.5,5.5,6.5]";
+    stringstream ist(json);
+    ist >> i;
+    stringstream o;
+    o << i;
+    string r;
+    o >> r;
+    CHECK(r==json);
+}
+
+TEST_CASE("bool list"){
+    Json_vector<bool> i;
+    i.push_back(true);
+    i.push_back(false);
+    i.push_back(true);
+    string json = "[0,1,0]";
+    stringstream ist(json);
+    ist >> i;
+    stringstream o;
+    o << i;
+    string r;
+    o >> r;
+    CHECK(r==json);
+}
+
+TEST_CASE("object list"){
+    struct Test_json_object: Json_object {
+        Test_json_object(){};
+        Test_json_object(int i, string s): i(i), s(s) {}
+        int i;
+        string s;
+        Json_set_builder({
+                             Json_add_member(i,true);
+                             Json_add_member(s,true);
+                         })
+    };
+    Json_vector<Test_json_object> i;
+    i.push_back({1,"1"});
+    i.push_back({2,"2"});
+    i.push_back({3,"3"});
+    string json = "[{\"i\":4,\"s\":\"4\"},{\"i\":5,\"s\":\"5\"},{\"i\":6,\"s\":\"6\"}]";
+    stringstream ist(json);
+    ist >> i;
+    stringstream o;
+    o << i;
+    string r;
+    o >> r;
+    CHECK(r==json);
+}
+
+TEST_CASE("nested object list"){
+    struct Test_member: Json_object {
+        Test_member(){};
+        Test_member(int i, string s): i(i), s(s) {}
+        int i;
+        string s;
+        Json_set_builder({
+                             Json_add_member(i,true);
+                             Json_add_member(s,true);
+                         })
+    };
+    struct Test_json_object: Json_object {
+        Test_json_object(){};
+        Test_json_object(int i, string s, Test_member m): i(i), s(s), m(m) {}
+        int i;
+        string s;
+        Test_member m;
+        Json_set_builder({
+                             Json_add_member(i,true);
+                             Json_add_member(s,true);
+                             Json_add_member(m,true);
+                         })
+    };
+    Test_json_object o {1,"1",{2, "2"}};
+    Json_vector<Test_json_object> i;
+    i.push_back({1,"1",{1,"1"}});
+    i.push_back({2,"2",{1,"1"}});
+    i.push_back({3,"3",{1,"1"}});
+    string json = "[{\"i\":4,\"s\":\"4\",\"m\":{\"i\":400,\"s\":\"400\"}},{\"i\":5,\"s\":\"5\",\"m\":{\"i\":410,\"s\":\"410\"}},{\"i\":6,\"s\":\"6\",\"m\":{\"i\":420,\"s\":\"420\"}}]";
+    stringstream ist(json);
+    ist >> i;
+    stringstream ou;
+    ou << i;
+    string r;
+    ou >> r;
+    CHECK(r==json);
+}
