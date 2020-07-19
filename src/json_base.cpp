@@ -58,4 +58,12 @@ namespace json_cpp {
         ss>>j;
         return s;
     }
+
+    void Json_base::json_write(ostream &) const {
+
+    }
+
+    void Json_base::json_parse(istream &) {
+
+    }
 }
