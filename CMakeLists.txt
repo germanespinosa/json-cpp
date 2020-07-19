@@ -48,3 +48,18 @@ export(TARGETS json-cpp FILE JsonCppConfig.cmake)
 ### TESTS
 ###
 find_package(CatchTests CONFIG QUIET)
+
+include(GNUInstallDirs)
+
+install(TARGETS json-cpp EXPORT Json-cppConfig
+        ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+install(EXPORT Json-cppConfig
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/Json-cpp
+        EXPORT_LINK_INTERFACE_LIBRARIES)
+
+export(TARGETS json-cpp FILE Json-cppConfig.cmake)
