@@ -3,6 +3,10 @@
 namespace json_cpp {
     template<class T>
     struct Json_vector : Json_base, std::vector<T> {
+        Json_vector () {};
+        Json_vector (size_t s): std::vector<T>(s) {
+
+        }
         void json_parse(std::istream &i) override {
             if constexpr (std::is_default_constructible<T>::value) {
                 if (Json_util::skip_blanks(i) != '[') throw std::logic_error("format error");
