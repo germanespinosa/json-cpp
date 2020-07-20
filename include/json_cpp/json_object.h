@@ -3,8 +3,8 @@
 
 #define Json_set_builder(ADD_MEMBERS) void json_set_builder(json_cpp::Json_builder &jb) override{ADD_MEMBERS} void json_set_builder(json_cpp::Json_builder &jb) const override{ADD_MEMBERS}
 
-#define Json_add_member(VARIABLE, MANDATORY) jb.json_add_member(#VARIABLE,MANDATORY,Json_wrap(VARIABLE))
-#define Json_add_member_with_name(VARIABLE, MANDATORY, NAME) jb.json_add_member(NAME,MANDATORY,Json_wrap(VARIABLE))
+#define Json_add_member(VARIABLE, MANDATORY) jb.json_add_member(#VARIABLE,MANDATORY,std::move(Json_wrap(VARIABLE).get_unique_ptr()))
+#define Json_add_member_with_name(VARIABLE, MANDATORY, NAME) jb.json_add_member(NAME,MANDATORY,std::move(Json_wrap(VARIABLE).get_unique_ptr()))
 
 namespace json_cpp {
     struct Json_object : Json_base{

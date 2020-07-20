@@ -71,8 +71,8 @@ TEST_CASE("json builder"){
     int i = 10;
     string s = "hello";
     Json_builder jb;
-    jb.json_add_member("i",true,Json_wrap(i));
-    jb.json_add_member("s",true,Json_wrap(s));
+    Json_add_member(i,true);
+    Json_add_member(s,true);
     string json = "{\"i\":20,\"s\":\"bye\"}";
     stringstream ist(json);
     ist >> jb;

@@ -4,23 +4,25 @@ namespace json_cpp {
     template<class T>
     struct Json_vector : Json_base, std::vector<T> {
         void json_parse(std::istream &i) override {
-            if (Json_util::skip_blanks(i) != '[') throw std::logic_error("format error");
-            Json_util::discard(i);
-            Json_vector<T> &o = *this;
-            o.clear();
-            while ((Json_util::skip_blanks(i) != ']')) {
-                T value;
-                if constexpr (std::is_base_of<Json_base, T>::value) {
-                    i >> value;
-                } else {
-                    Json_wrapper<T> wrapped(value);
-                    i >> wrapped;
-                }
-                o.push_back(value);
-                if (Json_util::skip_blanks(i) != ',') break;
+            if constexpr (std::is_default_constructible<T>::value) {
+                if (Json_util::skip_blanks(i) != '[') throw std::logic_error("format error");
                 Json_util::discard(i);
+                Json_vector<T> &o = *this;
+                o.clear();
+                while ((Json_util::skip_blanks(i) != ']')) {
+                    T value;
+                    if constexpr (std::is_base_of<Json_base, T>::value) {
+                        i >> value;
+                    } else {
+                        Json_wrapper<T> wrapped(value);
+                        i >> wrapped;
+                    }
+                    o.push_back(value);
+                    if (Json_util::skip_blanks(i) != ',') break;
+                    Json_util::discard(i);
+                }
+                if (Json_util::skip_blanks(i, true) != ']') throw std::logic_error("format error");
             }
-            if (Json_util::skip_blanks(i, true) != ']') throw std::logic_error("format error");
         }
 
         void json_write(std::ostream &o) const override {

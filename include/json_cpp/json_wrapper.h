@@ -5,10 +5,9 @@
 #include <memory>
 #include <optional>
 
-#define Json_wrap(X) std::move(json_cpp::Json_wrapper<std::remove_const<decltype(X)>::type>(X).get_unique_ptr())
+#define Json_wrap(X) json_cpp::Json_wrapper<std::remove_const<decltype(X)>::type>(X)
 
 namespace json_cpp {
-
     struct Json_wrapped : Json_base{
         virtual std::unique_ptr<Json_wrapped> get_unique_ptr() = 0;
         virtual std::unique_ptr<Json_wrapped> get_unique_ptr() const = 0;
