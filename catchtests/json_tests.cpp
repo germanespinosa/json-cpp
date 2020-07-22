@@ -92,7 +92,7 @@ TEST_CASE("json object"){
         Test_json_object(int i, string s): i(i), s(s) {}
         int i;
         string s;
-        Json_members({
+        Json_object_members({
                              Add_member(i, true);
                              Add_member(s, true);
                          })
@@ -119,7 +119,7 @@ TEST_CASE("json nested object"){
         Test_member(int i, string s): i(i), s(s) {}
         int i;
         string s;
-        Json_members({
+        Json_object_members({
             Add_member(i, true);
             Add_member(s, true);
         })
@@ -129,7 +129,7 @@ TEST_CASE("json nested object"){
         int i;
         string s;
         Test_member m;
-        Json_members({
+        Json_object_members({
                              Add_member(i, true);
                              Add_member(s, true);
                              Add_member(m, true);
@@ -198,7 +198,7 @@ TEST_CASE("object list"){
         Test_json_object(int i, string s): i(i), s(s) {}
         int i;
         string s;
-        Json_members({
+        Json_object_members({
                              Add_member(i, true);
                              Add_member(s, true);
                          })
@@ -223,7 +223,7 @@ TEST_CASE("nested object list"){
         Test_member(int i, string s): i(i), s(s) {}
         int i;
         string s;
-        Json_members({
+        Json_object_members({
                              Add_member(i, true);
                              Add_member(s, true);
                          })
@@ -234,7 +234,7 @@ TEST_CASE("nested object list"){
         int i;
         string s;
         Test_member m;
-        Json_members({
+        Json_object_members({
                              Add_member(i, true);
                              Add_member(s, true);
                              Add_member(m, true);
@@ -260,7 +260,7 @@ TEST_CASE("json object from string"){
         Test_json_object(int i, string s): i(i), s(s) {}
         int i;
         string s;
-        Json_members({
+        Json_object_members({
                              Add_member(i, true);
                              Add_member(s, true);
                          })
@@ -284,7 +284,7 @@ TEST_CASE("json object from char array"){
         Test_json_object(int i, string s): i(i), s(s) {}
         int i;
         string s;
-        Json_members({
+        Json_object_members({
                              Add_member(i, true);
                              Add_member(s, true);
                          })
