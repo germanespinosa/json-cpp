@@ -8,7 +8,7 @@ using namespace std;
 
 TEST_CASE("basic wrapper"){
     int v = 50;
-    Json_wrapper<int> i(v);
+    Json_object_wrapper<int> i(v);
     string s = "25";
     stringstream ist(s);
     ist >> i;
@@ -22,7 +22,7 @@ TEST_CASE("basic wrapper"){
 
 TEST_CASE("basic const wrapper bool"){
     const bool v = false;
-    auto i = json_cpp::Json_wrapper<bool>(v);
+    auto i = json_cpp::Json_object_wrapper<bool>(v);
 
     stringstream o;
     o << i;
@@ -40,7 +40,7 @@ TEST_CASE("basic enum wrapper"){
         a,b,c
     };
     Enum v = b;
-    auto i = json_cpp::Json_wrapper<Enum>(v);
+    auto i = json_cpp::Json_object_wrapper<Enum>(v);
     stringstream o;
     o << i;
     string r;
@@ -55,7 +55,7 @@ TEST_CASE("basic enum wrapper"){
 
 TEST_CASE("basic wrapper string"){
     string v = "hello";
-    Json_wrapper<string> i(v);
+    Json_object_wrapper<string> i(v);
     string s = "\"bye\"";
     stringstream ist(s);
     ist >> i;
@@ -71,8 +71,8 @@ TEST_CASE("json builder"){
     int i = 10;
     string s = "hello";
     Json_builder jb;
-    Json_add_member(i,true);
-    Json_add_member(s,true);
+    Add_member(i, true);
+    Add_member(s, true);
     string json = "{\"i\":20,\"s\":\"bye\"}";
     stringstream ist(json);
     ist >> jb;
@@ -92,9 +92,9 @@ TEST_CASE("json object"){
         Test_json_object(int i, string s): i(i), s(s) {}
         int i;
         string s;
-        Json_set_builder({
-                             Json_add_member(i,true);
-                             Json_add_member(s,true);
+        Json_members({
+                             Add_member(i, true);
+                             Add_member(s, true);
                          })
     };
     Test_json_object tjo {1,"hello"};
@@ -119,9 +119,9 @@ TEST_CASE("json nested object"){
         Test_member(int i, string s): i(i), s(s) {}
         int i;
         string s;
-        Json_set_builder({
-            Json_add_member(i,true);
-            Json_add_member(s,true);
+        Json_members({
+            Add_member(i, true);
+            Add_member(s, true);
         })
     };
     struct Test_json_object: Json_object {
@@ -129,10 +129,10 @@ TEST_CASE("json nested object"){
         int i;
         string s;
         Test_member m;
-        Json_set_builder({
-                             Json_add_member(i,true);
-                             Json_add_member(s,true);
-                             Json_add_member(m,true);
+        Json_members({
+                             Add_member(i, true);
+                             Add_member(s, true);
+                             Add_member(m, true);
                          })
     };
     Test_member tm {20,"bye"};
@@ -198,9 +198,9 @@ TEST_CASE("object list"){
         Test_json_object(int i, string s): i(i), s(s) {}
         int i;
         string s;
-        Json_set_builder({
-                             Json_add_member(i,true);
-                             Json_add_member(s,true);
+        Json_members({
+                             Add_member(i, true);
+                             Add_member(s, true);
                          })
     };
     Json_vector<Test_json_object> i;
@@ -223,9 +223,9 @@ TEST_CASE("nested object list"){
         Test_member(int i, string s): i(i), s(s) {}
         int i;
         string s;
-        Json_set_builder({
-                             Json_add_member(i,true);
-                             Json_add_member(s,true);
+        Json_members({
+                             Add_member(i, true);
+                             Add_member(s, true);
                          })
     };
     struct Test_json_object: Json_object {
@@ -234,10 +234,10 @@ TEST_CASE("nested object list"){
         int i;
         string s;
         Test_member m;
-        Json_set_builder({
-                             Json_add_member(i,true);
-                             Json_add_member(s,true);
-                             Json_add_member(m,true);
+        Json_members({
+                             Add_member(i, true);
+                             Add_member(s, true);
+                             Add_member(m, true);
                          })
     };
     Test_json_object o {1,"1",{2, "2"}};
@@ -260,9 +260,9 @@ TEST_CASE("json object from string"){
         Test_json_object(int i, string s): i(i), s(s) {}
         int i;
         string s;
-        Json_set_builder({
-                             Json_add_member(i,true);
-                             Json_add_member(s,true);
+        Json_members({
+                             Add_member(i, true);
+                             Add_member(s, true);
                          })
     };
     Test_json_object tjo {1,"hello"};
@@ -284,9 +284,9 @@ TEST_CASE("json object from char array"){
         Test_json_object(int i, string s): i(i), s(s) {}
         int i;
         string s;
-        Json_set_builder({
-                             Json_add_member(i,true);
-                             Json_add_member(s,true);
+        Json_members({
+                             Add_member(i, true);
+                             Add_member(s, true);
                          })
     };
     Test_json_object tjo {1,"hello"};

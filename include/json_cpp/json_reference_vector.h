@@ -1,5 +1,5 @@
 #include <json_cpp/json_wrapper.h>
-#define Json_id(ID_MEMBER) virtual void json_write(std::ostream &o) const { o << Json_wrap(_json_reference.get().ID_MEMBER); }
+#define Json_id(ID_MEMBER) virtual void json_write(std::ostream &o) const { o << Json_wrap_object(_json_reference.get().ID_MEMBER); }
 
 namespace json_cpp {
     template <class T>

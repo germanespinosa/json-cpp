@@ -7,6 +7,9 @@ namespace json_cpp {
         Json_vector (size_t s): std::vector<T>(s) {
 
         }
+        Json_vector (size_t s, T e): std::vector<T>(s,e) {
+
+        }
         void json_parse(std::istream &i) override {
             if constexpr (std::is_default_constructible<T>::value) {
                 if (Json_util::skip_blanks(i) != '[') throw std::logic_error("format error");
@@ -18,7 +21,7 @@ namespace json_cpp {
                     if constexpr (std::is_base_of<Json_base, T>::value) {
                         i >> value;
                     } else {
-                        Json_wrapper<T> wrapped(value);
+                        Json_object_wrapper<T> wrapped(value);
                         i >> wrapped;
                     }
                     o.push_back(value);
@@ -38,7 +41,7 @@ namespace json_cpp {
                 if constexpr (std::is_base_of<Json_base, T>::value) {
                     o << i;
                 } else {
-                    Json_wrapper<T> wrapped(i);
+                    Json_object_wrapper<T> wrapped(i);
                     o << wrapped;
                 }
             }
