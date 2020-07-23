@@ -71,8 +71,8 @@ TEST_CASE("json builder"){
     int i = 10;
     string s = "hello";
     Json_builder jb;
-    Add_member(i, true);
-    Add_member(s, true);
+    Add_member(i);
+    Add_member(s);
     string json = "{\"i\":20,\"s\":\"bye\"}";
     stringstream ist(json);
     ist >> jb;
@@ -93,8 +93,8 @@ TEST_CASE("json object"){
         int i;
         string s;
         Json_object_members({
-                             Add_member(i, true);
-                             Add_member(s, true);
+                             Add_member(i);
+                             Add_member(s);
                          })
     };
     Test_json_object tjo {1,"hello"};
@@ -120,8 +120,8 @@ TEST_CASE("json nested object"){
         int i;
         string s;
         Json_object_members({
-            Add_member(i, true);
-            Add_member(s, true);
+            Add_member(i);
+            Add_member(s);
         })
     };
     struct Test_json_object: Json_object {
@@ -130,9 +130,9 @@ TEST_CASE("json nested object"){
         string s;
         Test_member m;
         Json_object_members({
-                             Add_member(i, true);
-                             Add_member(s, true);
-                             Add_member(m, true);
+                             Add_member(i);
+                             Add_member(s);
+                             Add_member(m);
                          })
     };
     Test_member tm {20,"bye"};
@@ -199,8 +199,8 @@ TEST_CASE("object list"){
         int i;
         string s;
         Json_object_members({
-                             Add_member(i, true);
-                             Add_member(s, true);
+                             Add_member(i);
+                             Add_member(s);
                          })
     };
     Json_vector<Test_json_object> i;
@@ -224,8 +224,8 @@ TEST_CASE("nested object list"){
         int i;
         string s;
         Json_object_members({
-                             Add_member(i, true);
-                             Add_member(s, true);
+                             Add_member(i);
+                             Add_member(s);
                          })
     };
     struct Test_json_object: Json_object {
@@ -235,9 +235,9 @@ TEST_CASE("nested object list"){
         string s;
         Test_member m;
         Json_object_members({
-                             Add_member(i, true);
-                             Add_member(s, true);
-                             Add_member(m, true);
+                             Add_member(i);
+                             Add_member(s);
+                             Add_member(m);
                          })
     };
     Test_json_object o {1,"1",{2, "2"}};
@@ -261,8 +261,8 @@ TEST_CASE("json object from string"){
         int i;
         string s;
         Json_object_members({
-                             Add_member(i, true);
-                             Add_member(s, true);
+                             Add_member(i);
+                             Add_member(s);
                          })
     };
     Test_json_object tjo {1,"hello"};
@@ -285,8 +285,8 @@ TEST_CASE("json object from char array"){
         int i;
         string s;
         Json_object_members({
-                             Add_member(i, true);
-                             Add_member(s, true);
+                             Add_member(i);
+                             Add_member(s);
                          })
     };
     Test_json_object tjo {1,"hello"};
