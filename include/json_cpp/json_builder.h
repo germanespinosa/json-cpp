@@ -19,5 +19,6 @@ namespace json_cpp {
         };
         std::vector<Json_member> _members;
         Json_member &_member(const std::string &);
+        void _check_mandatory_members(const std::vector<std::string> &);
     };
 }

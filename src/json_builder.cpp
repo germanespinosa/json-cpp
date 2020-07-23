@@ -13,12 +13,14 @@ namespace json_cpp{
     }
 
     void Json_builder::json_parse(istream &i) {
+        vector<string> members_name;
         if (Json_util::skip_blanks(i) == '{') {
             Json_util::discard(i);
             string name;
             while (Json_util::skip_blanks(i) != '}') {
                 if (!Json_util::read_name(name, i)) throw logic_error("format error: field name");
                 auto &member = _member(name);
+                members_name.push_back(name);
                 member.ref->json_parse(i);
                 if (Json_util::skip_blanks(i) != ',') break;
                 Json_util::discard(i);
@@ -27,6 +29,7 @@ namespace json_cpp{
                 throw logic_error("format error: expecting '}'");
             }
             Json_util::discard(i);
+            _check_mandatory_members(members_name);
         } else {
             throw logic_error("format error: expecting '{'");
         }
@@ -48,6 +51,21 @@ namespace json_cpp{
         for (auto &m: _members){
             if (m.name == name) return m;
         }
-        throw logic_error("member not found '" + name + "'");;
+        throw logic_error("member not found '" + name + "'");
+    }
+
+    void Json_builder::_check_mandatory_members(const vector<std::string> &names) {
+        for (auto &member:_members){
+            if (member.mandatory){
+                bool found = false;
+                for (auto &name:names){
+                    if (name == member.name) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) throw logic_error("member '" + member.name + "' missing and marked as mandatory");
+            }
+        }
     }
 }
