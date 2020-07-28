@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <iostream>
 namespace json_cpp {
     struct Json_base {
         virtual void json_parse(std::istream &);
