@@ -301,3 +301,22 @@ TEST_CASE("json object from char array"){
     o2 >> r2;
     CHECK(r2=="{\"i\":1,\"s\":\"hello\"}");
 }
+
+TEST_CASE("Uri load") {
+    Json_URI u1("https://www.google.com");
+    CHECK(u1.protocol == Json_URI::Protocol::https);
+    CHECK(u1.domain == "www.google.com");
+    CHECK(u1.query_string == "");
+    CHECK(u1.port == 443);
+    string url;
+    url = u1;
+    CHECK(url == "https://www.google.com:443/");
+
+    Json_URI u2("http://www.google.com:65/query123?123/1");
+    CHECK(u2.protocol == Json_URI::Protocol::http);
+    CHECK(u2.domain == "www.google.com");
+    CHECK(u2.query_string == "query123?123/1");
+    CHECK(u2.port == 65);
+    url = u2;
+    CHECK(url == "http://www.google.com:65/query123?123/1");
+}

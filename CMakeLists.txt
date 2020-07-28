@@ -2,13 +2,14 @@ cmake_minimum_required(VERSION 3.13)
 
 set(CMAKE_CXX_STANDARD 17)
 
-
 project(json-cpp
         VERSION 2019.1.0
         DESCRIPTION "Json c++ library"
         LANGUAGES CXX)
 
-SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fno-strict-aliasing")
+find_package(CURL REQUIRED)
+
+message("HERE2 ${CURL_LIBRARIES}")
 
 set (json_cpp_files
         src/json_cpp.cpp
@@ -19,6 +20,10 @@ set (json_cpp_files
         )
 
 add_library(json-cpp ${json_cpp_files})
+
+target_link_libraries(json-cpp
+        PUBLIC
+        ${CURL_LIBRARIES})
 
 set_target_properties(json-cpp
         PROPERTIES
@@ -63,3 +68,6 @@ install(EXPORT Json-cppConfig
         EXPORT_LINK_INTERFACE_LIBRARIES)
 
 export(TARGETS json-cpp FILE Json-cppConfig.cmake)
+
+install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Json-cpp/Json-cppConfig.cmake \"find_package(CURL
+REQUIRED)\n\") ")
