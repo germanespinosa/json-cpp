@@ -69,7 +69,7 @@ namespace json_cpp {
 
     }
 
-    size_t Json_base::json_write_callback(char* buf, size_t size, size_t nmemb, void*)
+    size_t Json_base::_json_callback(char* buf, size_t size, size_t nmemb, void *)
     {
         string data;
         for (unsigned c = 0; c<size*nmemb; c++)
@@ -88,7 +88,7 @@ namespace json_cpp {
             curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
             /* example.com is redirected, so we tell libcurl to follow redirection */
             curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &Json_base::json_write_callback);
+            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &Json_base::_json_callback);
             /* Perform the request, res will get the return code */
             res = curl_easy_perform(curl);
             /* Check for errors */
@@ -126,6 +126,11 @@ namespace json_cpp {
             port = protocol == http?80:443;
         }
         getline(ss, query_string);
+    }
+
+    Json_URI::Json_URI() {
+        protocol = https;
+        port = 443;
     }
 
     Json_URI::operator string() const {

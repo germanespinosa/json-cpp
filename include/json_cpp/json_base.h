@@ -5,6 +5,7 @@
 namespace json_cpp {
 
     struct Json_URI {
+        Json_URI();
         explicit Json_URI(const std::string &);
         enum Protocol{
             http,
@@ -14,7 +15,7 @@ namespace json_cpp {
         std::string domain;
         unsigned int port;
         std::string query_string;
-        operator std::string () const;
+        operator std::string() const;
     };
 
     struct Json_base {
@@ -30,6 +31,6 @@ namespace json_cpp {
         friend char * operator >> (char *, Json_base &);
         friend const char * operator >> (const char *, Json_base &);
     private:
-        size_t json_write_callback(char* buf, size_t size, size_t nmemb, void* up);
+        size_t _json_callback(char* buf, size_t size, size_t , void* up);
     };
 }
