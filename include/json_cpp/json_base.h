@@ -15,6 +15,7 @@ namespace json_cpp {
         std::string domain;
         unsigned int port;
         std::string query_string;
+        std::string str() const;
         operator std::string() const;
     };
 

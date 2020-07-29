@@ -133,11 +133,15 @@ namespace json_cpp {
         port = 443;
     }
 
-    Json_URI::operator string() const {
+    std::string Json_URI::str() const {
         stringstream ss;
         if (protocol == http) ss << "http";
         else ss <<"https";
         ss << "://" << domain << ":" << port << "/" << query_string;
         return ss.str();
+    }
+
+    Json_URI::operator string() const {
+        return str();
     }
 }
