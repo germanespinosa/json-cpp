@@ -320,3 +320,19 @@ TEST_CASE("Uri load") {
     url = u2;
     CHECK(url == "http://www.google.com:65/query123?123/1");
 }
+
+TEST_CASE("load json object from url"){
+    struct Test_obj : Json_object{
+        Json_object_members({
+            Add_member(member1);
+            Add_member(member2);
+        })
+        string member1;
+        int member2;
+    };
+    Json_URI ju("https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/test.json");
+    Test_obj test_obj;
+    test_obj.load(ju);
+    CHECK(test_obj.member1 == "value");
+    CHECK(test_obj.member2 == 5);
+}

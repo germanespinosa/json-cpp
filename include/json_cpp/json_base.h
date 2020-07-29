@@ -17,6 +17,7 @@ namespace json_cpp {
         std::string query_string;
         std::string str() const;
         operator std::string() const;
+        friend std::ostream & operator << (std::ostream & , const Json_URI &);
     };
 
     struct Json_base {
@@ -24,14 +25,16 @@ namespace json_cpp {
         virtual void json_write(std::ostream &) const;
         bool load(const std::string &);
         bool save(const std::string &) const;
-        bool load(Json_URI &);
+        bool load(const Json_URI &);
         friend std::istream & operator >> (std::istream &, Json_base &);
         friend std::ostream & operator << (std::ostream & , const Json_base &);
         friend std::string & operator >> (std::string &, Json_base &);
         friend std::string & operator << (std::string & , const Json_base &);
         friend char * operator >> (char *, Json_base &);
         friend const char * operator >> (const char *, Json_base &);
+        friend const Json_URI & operator >> (const Json_URI &, Json_base &);
     private:
-        size_t _json_callback(char* buf, size_t size, size_t , void* up);
+        bool _json_callback_ready;
+        static size_t _json_callback(char*, size_t, size_t, void *);
     };
 }

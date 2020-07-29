@@ -69,37 +69,40 @@ namespace json_cpp {
 
     }
 
-    size_t Json_base::_json_callback(char* buf, size_t size, size_t nmemb, void *)
+    size_t Json_base::_json_callback(char* buf, size_t size, size_t nmemb, void *json_base_ptr)
     {
-        string data;
-        for (unsigned c = 0; c<size*nmemb; c++)
-        {
-            data.push_back(buf[c]);
-        }
+        auto *json_base = (Json_base *) json_base_ptr;
+        string data (buf , buf + size * nmemb);
+        data >> *(json_base);
+        json_base->_json_callback_ready = true;
         return size * nmemb;
     }
 
-    bool Json_base::load(Json_URI &uri) {
+    bool Json_base::load(const Json_URI &uri) {
         CURL *curl;
         CURLcode res;
         curl = curl_easy_init();
         if(curl) {
             string url = uri;
             curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-            /* example.com is redirected, so we tell libcurl to follow redirection */
             curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &Json_base::_json_callback);
-            /* Perform the request, res will get the return code */
+            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, _json_callback);
+            curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)this);
+            _json_callback_ready = false;
             res = curl_easy_perform(curl);
-            /* Check for errors */
             if(res != CURLE_OK) {
                 curl_easy_cleanup(curl);
                 return false;
             }
-            /* always cleanup */
+            while (!_json_callback_ready);
             curl_easy_cleanup(curl);
         }
         return true;
+    }
+
+    const Json_URI &operator>>(const Json_URI &uri, Json_base &jb) {
+        jb.load(uri);
+        return uri;
     }
 
     Json_URI::Json_URI(const std::string &url) {
@@ -139,6 +142,11 @@ namespace json_cpp {
         else ss <<"https";
         ss << "://" << domain << ":" << port << "/" << query_string;
         return ss.str();
+    }
+
+    std::ostream &operator<<(ostream &o, const Json_URI &uri) {
+        o << uri.str();
+        return o;
     }
 
     Json_URI::operator string() const {
