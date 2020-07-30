@@ -330,9 +330,8 @@ TEST_CASE("load json object from url"){
         string member1;
         int member2;
     };
-    Json_URI ju("https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/test.json");
     Test_obj test_obj;
-    Json_web_request(ju) >> test_obj;
+    Json_web_request(Json_URI("https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/test.json")) >> test_obj;
     CHECK(test_obj.member1 == "value");
     CHECK(test_obj.member2 == 5);
 }
