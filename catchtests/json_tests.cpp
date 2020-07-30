@@ -2,6 +2,7 @@
 #include<json_cpp.h>
 #include<iostream>
 #include<sstream>
+#include <cstring>
 
 using namespace json_cpp;
 using namespace std;
@@ -328,10 +329,18 @@ TEST_CASE("load json object from url"){
             Add_member(member2);
         })
         string member1;
-        int member2;
+        int member2{};
     };
     Test_obj test_obj;
-    Json_web_request(Json_URI("https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/test.json")) >> test_obj;
+    string url ("https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/test.json");
+    auto r = Json_web_get(url);
+    r.get_stream() >> test_obj;
     CHECK(test_obj.member1 == "value");
     CHECK(test_obj.member2 == 5);
+}
+
+TEST_CASE("pp"){
+    auto r = Json_web_get("https://raw.githubusercontent"
+                                    ".com/germanespinosa/cellworld_data/master/worlds/world_0_0");
+    CHECK(25416 == r.size());
 }

@@ -18,9 +18,12 @@ set (json_cpp_files
         src/json_builder.cpp
         src/json_object.cpp
         src/json_web_request.cpp
+        src/json_web_response.cpp
         )
 
 add_library(json-cpp ${json_cpp_files})
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
 target_link_libraries(json-cpp
         PUBLIC

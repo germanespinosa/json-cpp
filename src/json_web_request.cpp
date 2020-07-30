@@ -1,60 +1,10 @@
 #include <iostream>
-#include <fstream>
 #include <string>
-#include <sstream>
-#include <json_cpp/json_base.h>
 #include <json_cpp/json_web_request.h>
+#include <cstring>
 
 using namespace std;
 namespace json_cpp {
-
-    size_t Json_web_request::_json_callback(char* buf, size_t size, size_t nmemb, void *request_ptr)
-    {
-        auto *request = (Json_web_request *) request_ptr;
-        request->_buffer.set_mem(buf ,size * nmemb);
-        request->_json_stream_ready = true;
-        return size * nmemb;
-    }
-
-    Json_web_request::Json_web_request(const Json_URI &uri) :
-    istream(&_buffer),
-    _buffer (){
-        CURLcode res;
-        _curl_handler = curl_easy_init();
-        if(_curl_handler) {
-            string url = uri.url();
-            curl_easy_setopt(_curl_handler, CURLOPT_URL, url.c_str());
-            curl_easy_setopt(_curl_handler, CURLOPT_FOLLOWLOCATION, 1L);
-            curl_easy_setopt(_curl_handler, CURLOPT_WRITEFUNCTION, _json_callback);
-            curl_easy_setopt(_curl_handler, CURLOPT_WRITEDATA, (void *)this);
-            _json_stream_ready = false;
-            res = curl_easy_perform(_curl_handler);
-            if(res != CURLE_OK) {
-                curl_easy_cleanup(_curl_handler);
-            }
-            while (!_json_stream_ready);
-        }
-    }
-
-    Json_web_request::~Json_web_request() {
-        if (_json_stream_ready) {
-            curl_easy_cleanup(_curl_handler);
-        }
-    }
-
-    std::string Json_web_request::read() const {
-        if (!_json_stream_ready) throw logic_error("web request did not finished");
-        stringstream ss;
-        ss << *this;
-        return ss.str();
-    }
-
-    std::ostream &operator<<(ostream &o, const Json_web_request &jwr) {
-        if (!jwr._json_stream_ready) throw logic_error("web request did not finished");
-        o << jwr;
-        return o;
-    }
-
     Json_URI::Json_URI(const std::string &url) {
         stringstream ss (url);
         string part;
@@ -99,7 +49,40 @@ namespace json_cpp {
         return o;
     }
 
-    Json_URI::operator std::string() const {
-        return this->url();
+    size_t ignore_data(void *, size_t size, size_t nmemb, void *) { return size * nmemb; }
+    size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp) {
+        auto r = (Json_web_response *)userp;
+        r->push_data((char *) buffer, size * nmemb);
+        return size * nmemb;
     }
+
+    Json_web_response Json_web_request::get_response() {
+        auto url = uri.url();
+        CURL *curl = curl_easy_init();
+        if(!curl) throw logic_error("failed to create curl object");
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_HEADER, 1);
+        curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, ignore_data);
+        CURLcode res;
+        res = curl_easy_perform(curl);
+        curl_off_t ct;
+        res = curl_easy_getinfo(curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD_T, &ct);
+        if (res){
+            throw logic_error("failed to retrieve response info");
+        }
+        curl_easy_cleanup(curl);
+        curl = curl_easy_init();
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+        Json_web_response r(ct);
+        auto v = (void *) &r;
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, v);
+        res = curl_easy_perform(curl);
+        curl_easy_cleanup(curl);
+        return r;
+    }
+
+    Json_web_request::Json_web_request(Json_URI uri) : uri(uri) {}
 }
