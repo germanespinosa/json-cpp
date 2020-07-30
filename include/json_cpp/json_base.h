@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include <iostream>
-#include <json_cpp/json_web_request.h>
 
 namespace json_cpp {
     struct Json_base {
