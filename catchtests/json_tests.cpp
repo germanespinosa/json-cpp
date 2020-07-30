@@ -309,7 +309,7 @@ TEST_CASE("Uri load") {
     CHECK(u1.query_string == "");
     CHECK(u1.port == 443);
     string url;
-    url = u1;
+    url = u1.url();
     CHECK(url == "https://www.google.com:443/");
 
     Json_URI u2("http://www.google.com:65/query123?123/1");
@@ -317,7 +317,7 @@ TEST_CASE("Uri load") {
     CHECK(u2.domain == "www.google.com");
     CHECK(u2.query_string == "query123?123/1");
     CHECK(u2.port == 65);
-    url = u2;
+    url = u2.url();
     CHECK(url == "http://www.google.com:65/query123?123/1");
 }
 
@@ -332,7 +332,7 @@ TEST_CASE("load json object from url"){
     };
     Json_URI ju("https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/test.json");
     Test_obj test_obj;
-    test_obj.load(ju);
+    Json_web_request(ju) >> test_obj;
     CHECK(test_obj.member1 == "value");
     CHECK(test_obj.member2 == 5);
 }
