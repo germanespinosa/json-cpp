@@ -14,8 +14,5 @@ namespace json_cpp {
         friend std::string & operator << (std::string & , const Json_base &);
         friend char * operator >> (char *, Json_base &);
         friend const char * operator >> (const char *, Json_base &);
-    private:
-        bool _json_callback_ready;
-        static size_t _json_callback(char*, size_t, size_t, void *);
     };
 }

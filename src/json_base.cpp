@@ -1,9 +1,7 @@
-#include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
 #include <json_cpp/json_base.h>
-#include <curl/curl.h>
 
 
 using namespace std;
@@ -67,14 +65,5 @@ namespace json_cpp {
 
     void Json_base::json_parse(istream &) {
 
-    }
-
-    size_t Json_base::_json_callback(char* buf, size_t size, size_t nmemb, void *json_base_ptr)
-    {
-        auto *json_base = (Json_base *) json_base_ptr;
-        string data (buf , buf + size * nmemb);
-        data >> *(json_base);
-        json_base->_json_callback_ready = true;
-        return size * nmemb;
     }
 }
