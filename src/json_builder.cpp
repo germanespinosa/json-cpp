@@ -9,7 +9,7 @@ namespace json_cpp{
         name(name), mandatory(mandatory), ref(std::move(ref)){ }
 
     void Json_builder::json_add_member(std::string name, bool mandatory, std::unique_ptr<Json_wrapped> ref) {
-        _members.emplace_back(name,mandatory,std::move(ref));
+        members.emplace_back(name, mandatory, std::move(ref));
     }
 
     void Json_builder::json_parse(istream &i) {
@@ -38,7 +38,7 @@ namespace json_cpp{
     void Json_builder::json_write(ostream &o) const {
         bool first = true;
         o << '{';
-        for (auto &m:_members){
+        for (auto &m:members){
             if (!first) o<< ',';
             first = false;
             o<< '"' << m.name << '"' << ':';
@@ -48,14 +48,14 @@ namespace json_cpp{
     }
 
     Json_builder::Json_member &Json_builder::_member(const std::string &name) {
-        for (auto &m: _members){
+        for (auto &m: members){
             if (m.name == name) return m;
         }
         throw logic_error("member not found '" + name + "'");
     }
 
     void Json_builder::_check_mandatory_members(const vector<std::string> &names) {
-        for (auto &member:_members){
+        for (auto &member:members){
             if (member.mandatory){
                 bool found = false;
                 for (auto &name:names){
