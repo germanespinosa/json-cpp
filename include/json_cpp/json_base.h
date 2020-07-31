@@ -11,6 +11,7 @@ namespace json_cpp {
         friend std::istream & operator >> (std::istream &, Json_base &);
         friend std::ostream & operator << (std::ostream & , const Json_base &);
         friend std::string & operator >> (std::string &, Json_base &);
+        friend const std::string & operator >> (const std::string &, Json_base &);
         friend std::string & operator << (std::string & , const Json_base &);
         friend char * operator >> (char *, Json_base &);
         friend const char * operator >> (const char *, Json_base &);

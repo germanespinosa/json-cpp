@@ -66,4 +66,10 @@ namespace json_cpp {
     void Json_base::json_parse(istream &) {
 
     }
+
+    const std::string &operator>>(const string &i, Json_base &j) {
+        std::stringstream ss(i);
+        ss >> j;
+        return i;
+    }
 }
