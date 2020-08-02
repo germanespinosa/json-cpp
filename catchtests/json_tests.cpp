@@ -341,6 +341,21 @@ TEST_CASE("load json object from url"){
 
 TEST_CASE("pp"){
     auto r = Json_web_get("https://raw.githubusercontent"
-                                    ".com/germanespinosa/cellworld_data/master/worlds/world_0_0");
+                                    ".com/germanespinosa/cellworld_data/master/world/world_0_0");
     CHECK(25416 == r.size());
+}
+
+TEST_CASE("fix pointer"){
+    struct Test_object : Json_object{
+        Test_object():Json_object(){}
+        int a = 10,b = 20;
+        Json_object_members({
+            Add_member(a);
+            Add_member(b);
+        })
+    };
+    Test_object *t2 = new((Test_object *)malloc(sizeof(Test_object) + 4)) Test_object();
+    stringstream o2;
+    o2 << (*t2);
+    CHECK(o2.str() == "{\"a\":10,\"b\":20}");
 }
