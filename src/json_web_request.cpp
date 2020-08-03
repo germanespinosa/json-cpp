@@ -64,6 +64,11 @@ namespace json_cpp {
         curl_easy_setopt(curl, CURLOPT_HEADER, 1);
         curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, ignore_data);
+
+        struct curl_slist *headers=NULL;
+        curl_slist_append( headers, "Cache-Control: max-age=0");
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
         CURLcode res;
         res = curl_easy_perform(curl);
         curl_off_t ct;
@@ -76,6 +81,8 @@ namespace json_cpp {
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
         Json_web_response r(ct);
         auto v = (void *) &r;
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, v);
