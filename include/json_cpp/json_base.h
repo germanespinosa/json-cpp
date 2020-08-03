@@ -16,4 +16,10 @@ namespace json_cpp {
         friend char * operator >> (char *, Json_base &);
         friend const char * operator >> (const char *, Json_base &);
     };
+    template <class T>
+    T Json_create(std::istream &i) {
+        T o;
+        i >> o;
+        return o;
+    }
 }
