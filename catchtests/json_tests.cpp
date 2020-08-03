@@ -359,3 +359,19 @@ TEST_CASE("fix pointer"){
     o2 << (*t2);
     CHECK(o2.str() == "{\"a\":10,\"b\":20}");
 }
+
+TEST_CASE("json_create"){
+    struct Test_obj : Json_object{
+        Json_object_members({
+                                Add_member(member1);
+                                Add_member(member2);
+                            })
+        string member1;
+        int member2{};
+    };
+    ;
+    string url ("https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/test.json");
+    auto test_obj = Json_create<Test_obj>(Json_web_get(url).get_stream());
+    CHECK(test_obj.member1 == "value");
+    CHECK(test_obj.member2 == 5);
+}
