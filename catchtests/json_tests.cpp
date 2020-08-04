@@ -375,3 +375,8 @@ TEST_CASE("json_create"){
     CHECK(test_obj.member1 == "value");
     CHECK(test_obj.member2 == 5);
 }
+
+TEST_CASE("check 404"){
+    string url ("https://bogus-url.com");
+    auto r = Json_web_get(url);
+}

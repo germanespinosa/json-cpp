@@ -9,8 +9,6 @@ project(json-cpp
 
 find_package(CURL REQUIRED)
 
-message("HERE2 ${CURL_LIBRARIES}")
-
 set (json_cpp_files
         src/json_cpp.cpp
         src/json_base.cpp
