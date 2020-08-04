@@ -64,19 +64,17 @@ namespace json_cpp {
         curl_easy_setopt(curl, CURLOPT_HEADER, 1);
         curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, ignore_data);
-        curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
 
         struct curl_slist *headers=NULL;
-        curl_slist_append( headers, "Cache-Control: max-age=0");
+        curl_slist_append(headers, "Cache-Control: max-age=0");
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
         CURLcode res;
         res = curl_easy_perform(curl);
         curl_off_t ct;
         res = curl_easy_getinfo(curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD_T, &ct);
-        if (res != CURLE_OK){
-            throw logic_error("failed to retrieve response info");
-        }
+        if (res != CURLE_OK) throw logic_error("failed to retrieve response info");
+        if (ct < 0) throw logic_error("failed to retrieve '" + url + "'");
 
         curl_easy_cleanup(curl);
 
@@ -85,14 +83,11 @@ namespace json_cpp {
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-        curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
         Json_web_response r(ct);
         auto v = (void *) &r;
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, v);
         res = curl_easy_perform(curl);
-//        if (res != CURLE_OK){
-//            throw logic_error("failed to retrieve content from '" + url + "'");
-//        }
+        if (res != CURLE_OK) throw logic_error("failed to retrieve content from '" + url + "'");
 
         curl_easy_cleanup(curl);
         return r;
