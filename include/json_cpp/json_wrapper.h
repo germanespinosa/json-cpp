@@ -13,21 +13,12 @@ namespace json_cpp {
     struct Json_wrapped : Json_base{
         virtual std::unique_ptr<Json_wrapped> get_unique_ptr() = 0;
         virtual std::unique_ptr<Json_wrapped> get_unique_ptr() const = 0;
-        bool require_quotes{false};
     };
 
     template <class T>
     struct Json_reference_wrapper : Json_wrapped{
-        explicit Json_reference_wrapper<T>(T &value) : _value (value), _cvalue (value){
-            if constexpr (std::is_same_v<T, std::string>) {
-                require_quotes = true;
-            }
-        }
-        explicit Json_reference_wrapper<T>(const T &value) : _cvalue (value){
-            if constexpr (std::is_same_v<T, std::string>) {
-                require_quotes = true;
-            }
-        }
+        explicit Json_reference_wrapper<T>(T &value) : _value (value), _cvalue (value){}
+        explicit Json_reference_wrapper<T>(const T &value) : _cvalue (value){}
         void json_parse(std::istream &i) override{
             if (!_value) throw std::logic_error("cannot write a const variable");
             auto &r = _value.value().get();

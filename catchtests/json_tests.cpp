@@ -378,5 +378,5 @@ TEST_CASE("json_create"){
 
 TEST_CASE("check 404"){
     string url ("https://bogus-url.com");
-    auto r = Json_web_get(url);
+    CHECK_THROWS(Json_web_get(url));
 }
