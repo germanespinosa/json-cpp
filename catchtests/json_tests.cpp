@@ -380,3 +380,12 @@ TEST_CASE("check 404"){
     string url ("https://bogus-url.com");
     CHECK_THROWS(Json_web_get(url));
 }
+
+TEST_CASE("check needs quotes") {
+    string a;
+    int b;
+    CHECK(needs_quotes<string>(a) == true);
+    CHECK(needs_quotes<int>(b) == false);
+    CHECK(Json_needs_quotes(a) == true);
+    CHECK(Json_needs_quotes(b) == false);
+}
