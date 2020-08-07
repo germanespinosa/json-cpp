@@ -13,6 +13,7 @@ namespace json_cpp {
         };
         void json_parse(std::istream &) override;
         void json_write(std::ostream &) const override;
+        bool contains (const std::string &);
         size_t size();
         Item operator [](const std::string &);
         std::vector<Item> items;

@@ -47,6 +47,11 @@ Json_dictionary::Item Json_dictionary::operator[](const string &key) {
     throw logic_error("key not found");
 }
 
+bool Json_dictionary::contains(const string &key) {
+    for (auto &k:keys) if (k==key) return true;
+    return false;
+}
+
 Json_dictionary Json_dictionary::Item::to_dict() {
     Json_dictionary d;
     stringstream ss(value);
