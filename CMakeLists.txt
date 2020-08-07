@@ -17,6 +17,7 @@ set (json_cpp_files
         src/json_object.cpp
         src/json_web_request.cpp
         src/json_web_response.cpp
+        src/json_dictionary.cpp
         )
 
 add_library(json-cpp ${json_cpp_files})

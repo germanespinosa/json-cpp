@@ -389,3 +389,24 @@ TEST_CASE("check needs quotes") {
     CHECK(Json_needs_quotes(a) == true);
     CHECK(Json_needs_quotes(b) == false);
 }
+
+TEST_CASE("dictionary") {
+    string json = "{\"i\":20,\"s\":\"bye\",\"m\":{\"i\":200,\"s\":\"hello\"}}";
+    stringstream ist(json);
+    Json_dictionary dict;
+    json >> dict;
+    CHECK(dict.size() == 3);
+    CHECK(dict["i"].value=="20");
+    CHECK(dict["s"].value=="bye");
+    CHECK(dict["s"].require_quotes==true);
+    CHECK(dict["m"].value=="{\"i\":200,\"s\":\"hello\"}");
+    CHECK(dict["m"].to_dict()["i"].value=="200");
+    CHECK(dict["m"].to_dict()["s"].value=="hello");
+    CHECK(dict["m"].to_dict()["s"].require_quotes==true);
+    stringstream ss;
+    ss << dict;
+    CHECK(ss.str()== "{\"i\":20,\"s\":\"bye\",\"m\":{\"i\":200,\"s\":\"hello\"}}");
+    stringstream ss2;
+    ss2 << dict["m"].to_dict();
+    CHECK(ss2.str()== "{\"i\":200,\"s\":\"hello\"}");
+}
