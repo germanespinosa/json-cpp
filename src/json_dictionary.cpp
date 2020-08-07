@@ -10,9 +10,11 @@ void Json_dictionary::json_parse(istream &i) {
         string name;
         while (Json_util::skip_blanks(i) != '}'){
             Item new_item;
-            if (!Json_util::read_name(new_item._key, i)) throw logic_error("format error: field name");
+            string key;
+            if (!Json_util::read_name(key, i)) throw logic_error("format error: field name");
             i >> new_item;
             items.push_back(new_item);
+            keys.push_back(key);
             if (Json_util::skip_blanks(i) != ',') break;
             Json_util::discard(i);
         }
@@ -24,11 +26,13 @@ void Json_dictionary::json_parse(istream &i) {
 void Json_dictionary::json_write(ostream &o) const {
     bool first = true;
     o << '{';
+    unsigned int key_index=0;
     for (auto &i:items){
         if (!first) o << ',';
         first = false;
-        o << '"' << i._key << "\":";
+        o << '"' << keys[key_index] << "\":";
         o << i;
+        key_index ++;
     }
     o << '}';
 }
@@ -38,7 +42,8 @@ size_t Json_dictionary::size() {
 }
 
 Json_dictionary::Item Json_dictionary::operator[](const string &key) {
-    for (auto &i:items) if (i._key==key) return i;
+    for (unsigned int key_index =0 ; key_index < keys.size(); key_index ++ )
+        if (keys[key_index]==key) return items[key_index];
     throw logic_error("key not found");
 }
 

@@ -10,15 +10,12 @@ namespace json_cpp {
             std::string value;
             bool require_quotes;
             Json_dictionary to_dict();
-        private:
-            std::string _key;
-            friend struct Json_dictionary;
         };
         void json_parse(std::istream &) override;
         void json_write(std::ostream &) const override;
         size_t size();
         Item operator [](const std::string &);
-    private:
         std::vector<Item> items;
+        std::vector<std::string> keys;
     };
 }

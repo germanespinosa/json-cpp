@@ -396,6 +396,9 @@ TEST_CASE("dictionary") {
     Json_dictionary dict;
     json >> dict;
     CHECK(dict.size() == 3);
+    CHECK(dict.keys[0] == "i");
+    CHECK(dict.keys[1] == "s");
+    CHECK(dict.keys[2] == "m");
     CHECK(dict["i"].value=="20");
     CHECK(dict["s"].value=="bye");
     CHECK(dict["s"].require_quotes==true);
@@ -403,10 +406,13 @@ TEST_CASE("dictionary") {
     CHECK(dict["m"].to_dict()["i"].value=="200");
     CHECK(dict["m"].to_dict()["s"].value=="hello");
     CHECK(dict["m"].to_dict()["s"].require_quotes==true);
+    CHECK(dict["m"].to_dict().keys[0] == "i");
+    CHECK(dict["m"].to_dict().keys[1] == "s");
     stringstream ss;
     ss << dict;
     CHECK(ss.str()== "{\"i\":20,\"s\":\"bye\",\"m\":{\"i\":200,\"s\":\"hello\"}}");
     stringstream ss2;
     ss2 << dict["m"].to_dict();
     CHECK(ss2.str()== "{\"i\":200,\"s\":\"hello\"}");
+
 }
