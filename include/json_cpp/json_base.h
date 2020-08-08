@@ -22,4 +22,10 @@ namespace json_cpp {
         i >> o;
         return o;
     }
+    template <class T>
+    T Json_create(std::string &s) {
+        T o;
+        s >> o;
+        return o;
+    }
 }
