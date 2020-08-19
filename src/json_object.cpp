@@ -7,6 +7,7 @@ namespace json_cpp {
         Json_builder jb;
         json_set_builder(jb);
         i >> jb;
+        after_load();
     }
 
     void Json_object::json_write(ostream &o) const {

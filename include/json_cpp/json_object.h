@@ -12,6 +12,8 @@ namespace json_cpp {
         Json_object();
         virtual void json_set_builder(Json_builder &);
         virtual void json_set_builder(Json_builder &) const;
+        virtual void after_load() {};
+        virtual void after_load() const{};
         void json_parse(std::istream &) override;
         void json_write(std::ostream &) const override;
     };
