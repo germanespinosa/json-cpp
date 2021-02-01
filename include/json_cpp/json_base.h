@@ -31,7 +31,7 @@ namespace json_cpp {
     template <class T>
     T Json_from_file(const std::string &file_path) {
         T o;
-        o.load(s);
+        o.load(file_path);
         return o;
     }
 }
