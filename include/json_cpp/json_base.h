@@ -31,7 +31,9 @@ namespace json_cpp {
     template <class T>
     T Json_from_file(const std::string &file_path) {
         T o;
-        o.load(file_path);
+        if (!o.load(file_path)){
+            throw std::logic_error("file not found '" + file_path + "'");
+        };
         return o;
     }
 }
