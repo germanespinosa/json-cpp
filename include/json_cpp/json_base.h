@@ -29,7 +29,7 @@ namespace json_cpp {
         return o;
     }
     template <class T>
-    T Json_from_file(std::string &s) {
+    T Json_from_file(const std::string &s) {
         T o;
         o.load(s);
         return o;
