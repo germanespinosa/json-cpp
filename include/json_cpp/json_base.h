@@ -8,6 +8,7 @@ namespace json_cpp {
         virtual void json_write(std::ostream &) const;
         bool load(const std::string &);
         bool save(const std::string &) const;
+        std::string to_json() const;
         friend std::istream & operator >> (std::istream &, Json_base &);
         friend std::ostream & operator << (std::ostream & , const Json_base &);
         friend std::string & operator >> (std::string &, Json_base &);
