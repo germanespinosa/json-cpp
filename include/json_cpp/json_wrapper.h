@@ -4,7 +4,8 @@
 #include <json_cpp/json_base.h>
 #include <memory>
 #include <optional>
-
+#include <span>
+#include <sstream>
 #define Json_wrap_object(X) json_cpp::Json_object_wrapper<std::remove_const<std::remove_reference<decltype(X)>::type>::type>(X)
 #define Json_needs_quotes(X) json_cpp::needs_quotes<std::remove_const<std::remove_reference<decltype(X)>::type>::type>(X)
 
@@ -59,4 +60,28 @@ namespace json_cpp {
         std::optional<std::reference_wrapper<T>> _value ;
         std::reference_wrapper<const T> _cvalue;
     };
+    template <class T>
+    std::ostream & operator << (std::ostream & o, const std::span<T> &s){
+        o << "[";
+        bool first = true;
+        for (const auto &i:s) {
+            if (!first) o << ",";
+            first = false;
+            if constexpr (std::is_base_of<Json_base, T>::value) {
+                o << i;
+            } else {
+                Json_object_wrapper<T> wrapped(i);
+                o << wrapped;
+            }
+        }
+        o << "]";
+        return o;
+    }
+    template <class T>
+    std::string & operator << (std::string & st, const std::span<T> &sp){
+        std::stringstream ss(st);
+        ss << sp;
+        st = ss.str();
+        return st;
+    }
 }

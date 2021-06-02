@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 project(json-cpp
         VERSION 2019.1.0
@@ -30,7 +30,7 @@ target_link_libraries(json-cpp
 
 set_target_properties(json-cpp
         PROPERTIES
-        CXX_STANDARD 17
+        CXX_STANDARD 20
         CXX_STANDARD_REQUIRED On
         CXX_EXTENSIONS Off
         VERSION ${PROJECT_VERSION})

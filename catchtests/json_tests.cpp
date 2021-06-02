@@ -192,6 +192,18 @@ TEST_CASE("bool list"){
     o >> r;
     CHECK(r==json);
 }
+TEST_CASE("list slice"){
+    Json_vector<int> v;
+    for (int i=0;i<100; i++){
+        v.push_back(i+100);
+    }
+    string s1;
+    s1 << v.slice(20);
+    string s2;
+    s2 << v.slice(20,30);
+    CHECK (s1 == "[100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119]");
+    CHECK (s2 == "[120,121,122,123,124,125,126,127,128,129]");
+}
 
 TEST_CASE("object list"){
     struct Test_json_object: Json_object {
