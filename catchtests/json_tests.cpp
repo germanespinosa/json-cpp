@@ -53,7 +53,6 @@ TEST_CASE("basic enum wrapper"){
     CHECK(v==Enum::c);
 }
 
-
 TEST_CASE("basic wrapper string"){
     string v = "hello";
     Json_object_wrapper<string> i(v);
@@ -64,9 +63,37 @@ TEST_CASE("basic wrapper string"){
     o << i;
     string r;
     o >> r;
+    string s2 = "\"bye\"";
+
     CHECK(v=="bye");
     CHECK(r=="\"bye\"");
 }
+
+
+TEST_CASE("escape sequences"){
+    string v = "hello";
+    Json_object_wrapper<string> i(v);
+    string s = "\"\\\"bye\\n\\\"\"";
+    stringstream ist(s);
+    ist >> i;
+    stringstream o;
+    o << i;
+    CHECK(v=="\"bye\n\"");
+    CHECK(o.str()=="\"\\\"bye\\n\\\"\""); //adds quotation
+}
+
+TEST_CASE("more escape sequences"){
+    string v = "hello";
+    Json_object_wrapper<string> i(v);
+    string s = "\"\\x8E - this is a problem ?bye\"";
+    stringstream ist(s);
+    ist >> i;
+    stringstream o;
+    o << i;
+    CHECK(v=="\x8E - this is a problem ?bye");
+    CHECK(o.str()=="\"\\x8E - this is a problem \\?bye\""); //adds quotation
+}
+
 
 TEST_CASE("json builder"){
     int i = 10;

@@ -45,7 +45,11 @@ namespace json_cpp {
         void json_write(std::ostream &o) const override{
             const auto &r = _cvalue.get();
             if constexpr (std::is_same_v<T, std::string>) {
-                o << '"' << r << '"';
+                o << '"';
+                for (auto c:r){
+                    Json_util::write_escaped(o,c);
+                }
+                o << '"';
             } else {
                 o << r;
             }
