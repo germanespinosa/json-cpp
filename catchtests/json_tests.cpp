@@ -416,3 +416,62 @@ TEST_CASE("dictionary") {
     CHECK(ss2.str()== "{\"i\":200,\"s\":\"hello\"}");
 
 }
+
+
+TEST_CASE("json_util base64") {
+    Json_buffer buffer;
+    buffer.address = (void*) "any carnal pleasu";
+    buffer.size = 18;
+    stringstream ss;
+    ss << "\"";
+    Json_util::write_value(ss,buffer);
+    ss << "\"";
+    Json_buffer buffer1(true);
+    Json_util::read_value(ss, buffer1);
+    CHECK(strcmp((char*)buffer.address,(char*)buffer1.address) == 0);
+    CHECK(buffer.size == buffer1.size);
+}
+
+
+struct Binary_test : Json_binary {
+    virtual Json_buffer get_write_buffer() const override{
+        return Json_buffer::new_buffer((void *)data.c_str(), data.size() + 1);
+    };
+    virtual void set_value(const Json_buffer &jb) override{
+        data = (char *)jb.address;
+    }
+    string data;
+};
+
+TEST_CASE("json_util binary") {
+    Binary_test bt;
+    bt.data = "hello there!!!";
+
+    stringstream ss;
+    ss << bt;
+    string sr = "\"" + ss.str() + "\"";
+    CHECK(sr == "\"aGVsbG8gdGhlcmUhISEA\"");
+    Binary_test bt1;
+    sr >> bt1;
+    CHECK (bt1.data == bt.data);
+}
+
+TEST_CASE("json_binary") {
+    Binary_test bt;
+    bt.data = "hello there!!!";
+
+    stringstream ss;
+    ss << bt;
+    string sr = "\"" + ss.str() + "\"";
+    CHECK(sr == "\"aGVsbG8gdGhlcmUhISEA\"");
+    Binary_test bt1;
+    sr >> bt1;
+    CHECK (bt1.data == bt.data);
+}
+
+TEST_CASE("json_date") {
+    cout << Json_date::now() << endl;
+    Json_date t;
+    "\"2021-08-05 22:41:26.682\"" >> t;
+    cout << t << endl;
+}

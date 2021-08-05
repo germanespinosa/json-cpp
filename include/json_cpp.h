@@ -6,6 +6,8 @@
 #include <json_cpp/json_dictionary.h>
 #include <json_cpp/json_object.h>
 #include <json_cpp/json_vector.h>
+#include <json_cpp/json_binary.h>
+#include <json_cpp/json_date.h>
 #include <json_cpp/json_reference_vector.h>
 #include <json_cpp/json_web_request.h>
 #include <json_cpp/json_web_response.h>

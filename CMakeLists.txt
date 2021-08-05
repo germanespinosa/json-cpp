@@ -8,10 +8,14 @@ project(json-cpp
         LANGUAGES CXX)
 
 find_package(CURL REQUIRED)
+find_package(date REQUIRED)
 
 set (json_cpp_files
         src/json_cpp.cpp
         src/json_base.cpp
+        src/json_date.cpp
+        src/json_buffer.cpp
+        src/json_base64.cpp
         src/json_util.cpp
         src/json_builder.cpp
         src/json_object.cpp
@@ -49,7 +53,6 @@ target_include_directories(json-cpp
 target_include_directories(json-cpp
         PRIVATE
         include )
-
 
 ###
 ### TESTS
