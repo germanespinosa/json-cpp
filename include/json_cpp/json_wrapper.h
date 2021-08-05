@@ -4,7 +4,8 @@
 #include <json_cpp/json_base.h>
 #include <memory>
 #include <optional>
-
+#include <span>
+#include <sstream>
 #define Json_wrap_object(X) json_cpp::Json_object_wrapper<std::remove_const<std::remove_reference<decltype(X)>::type>::type>(X)
 #define Json_needs_quotes(X) json_cpp::needs_quotes<std::remove_const<std::remove_reference<decltype(X)>::type>::type>(X)
 

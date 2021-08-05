@@ -8,6 +8,7 @@ namespace json_cpp {
         virtual void json_write(std::ostream &) const;
         bool load(const std::string &);
         bool save(const std::string &) const;
+        std::string to_json() const;
         friend std::istream & operator >> (std::istream &, Json_base &);
         friend std::ostream & operator << (std::ostream & , const Json_base &);
         friend std::string & operator >> (std::string &, Json_base &);
@@ -26,6 +27,14 @@ namespace json_cpp {
     T Json_create(std::string &s) {
         T o;
         s >> o;
+        return o;
+    }
+    template <class T>
+    T Json_from_file(const std::string &file_path) {
+        T o;
+        if (!o.load(file_path)){
+            throw std::logic_error("file not found '" + file_path + "'");
+        };
         return o;
     }
 }

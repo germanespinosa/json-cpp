@@ -1,10 +1,10 @@
 #include <iostream>
-#include <json_cpp/json_base64.h>
 #include <json_cpp/json_util.h>
 
+#define ESCAPED_PARSE_ERROR throw logic_error("escape sequence not implemented")
 #define STRING_PARSE_ERROR throw logic_error("error converting to string")
 #define INT_PARSE_ERROR throw logic_error("error converting to int")
-#define DOUBLE_PARSE_ERROR throw logic_error("decimal error converting to double")
+#define DOUBLE_PARSE_ERROR throw logic_error("error converting to double")
 
 using namespace std;
 namespace json_cpp {
@@ -104,5 +104,4 @@ namespace json_cpp {
     void Json_util::write_value(ostream &o,const string &v) {
         o << '"' << v << '"';
     }
-
 }

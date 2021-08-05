@@ -64,9 +64,37 @@ TEST_CASE("basic wrapper string"){
     o << i;
     string r;
     o >> r;
+    string s2 = "\"bye\"";
+
     CHECK(v=="bye");
     CHECK(r=="\"bye\"");
 }
+
+
+TEST_CASE("escape sequences"){
+    string v = "hello";
+    Json_object_wrapper<string> i(v);
+    string s = "\"\\\"bye\\n\\\"\"";
+    stringstream ist(s);
+    ist >> i;
+    stringstream o;
+    o << i;
+    CHECK(v=="\"bye\n\"");
+    CHECK(o.str()=="\"\\\"bye\\n\\\"\""); //adds quotation
+}
+
+TEST_CASE("more escape sequences"){
+    string v = "hello";
+    Json_object_wrapper<string> i(v);
+    string s = "\"\\x8E - this is a problem ?bye\"";
+    stringstream ist(s);
+    ist >> i;
+    stringstream o;
+    o << i;
+    CHECK(v=="\x8E - this is a problem ?bye");
+    CHECK(o.str()=="\"\\x8E - this is a problem \\?bye\""); //adds quotation
+}
+
 
 TEST_CASE("json builder"){
     int i = 10;
@@ -191,6 +219,18 @@ TEST_CASE("bool list"){
     string r;
     o >> r;
     CHECK(r==json);
+}
+TEST_CASE("list slice"){
+    Json_vector<int> v;
+    for (int i=0;i<100; i++){
+        v.push_back(i+100);
+    }
+    string s1;
+    s1 << v.slice(20);
+    string s2;
+    s2 << v.slice(20,30);
+    CHECK (s1 == "[100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119]");
+    CHECK (s2 == "[120,121,122,123,124,125,126,127,128,129]");
 }
 
 TEST_CASE("object list"){

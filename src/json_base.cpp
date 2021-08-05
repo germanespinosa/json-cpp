@@ -72,4 +72,10 @@ namespace json_cpp {
         ss >> j;
         return i;
     }
+
+    std::string Json_base::to_json() const {
+        string s;
+        s << *(this);
+        return s;
+    }
 }

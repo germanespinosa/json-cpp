@@ -34,7 +34,7 @@ target_link_libraries(json-cpp
 
 set_target_properties(json-cpp
         PROPERTIES
-        CXX_STANDARD 17
+        CXX_STANDARD 20
         CXX_STANDARD_REQUIRED On
         CXX_EXTENSIONS Off
         VERSION ${PROJECT_VERSION})
@@ -53,6 +53,7 @@ target_include_directories(json-cpp
 target_include_directories(json-cpp
         PRIVATE
         include )
+
 
 ###
 ### TESTS
