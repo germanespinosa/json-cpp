@@ -1,5 +1,6 @@
 #pragma once
 #include <json_cpp/json_base.h>
+#include <json_cpp/json_buffer.h>
 
 namespace json_cpp {
     struct Json_util {

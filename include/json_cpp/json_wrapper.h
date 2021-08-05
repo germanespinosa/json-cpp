@@ -19,9 +19,9 @@ namespace json_cpp {
     }
 
     struct Json_wrapped : Json_base{
-        virtual std::unique_ptr<Json_wrapped> get_unique_ptr() = 0;
-        virtual std::unique_ptr<Json_wrapped> get_unique_ptr() const = 0;
-    };
+            virtual std::unique_ptr<Json_wrapped> get_unique_ptr() = 0;
+            virtual std::unique_ptr<Json_wrapped> get_unique_ptr() const = 0;
+        };
 
     template <class T>
     struct Json_object_wrapper : Json_wrapped{
@@ -45,7 +45,11 @@ namespace json_cpp {
         void json_write(std::ostream &o) const override{
             const auto &r = _cvalue.get();
             if constexpr (std::is_same_v<T, std::string>) {
-                o << '"' << r << '"';
+                o << '"';
+                for (auto c:r){
+                    Json_util::write_escaped(o,c);
+                }
+                o << '"';
             } else {
                 o << r;
             }
@@ -60,4 +64,28 @@ namespace json_cpp {
         std::optional<std::reference_wrapper<T>> _value ;
         std::reference_wrapper<const T> _cvalue;
     };
+    template <class T>
+    std::ostream & operator << (std::ostream & o, const std::span<T> &s){
+        o << "[";
+        bool first = true;
+        for (const auto &i:s) {
+            if (!first) o << ",";
+            first = false;
+            if constexpr (std::is_base_of<Json_base, T>::value) {
+                o << i;
+            } else {
+                Json_object_wrapper<T> wrapped(i);
+                o << wrapped;
+            }
+        }
+        o << "]";
+        return o;
+    }
+    template <class T>
+    std::string & operator << (std::string & st, const std::span<T> &sp){
+        std::stringstream ss(st);
+        ss << sp;
+        st = ss.str();
+        return st;
+    }
 }

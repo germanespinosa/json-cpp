@@ -1,5 +1,6 @@
 #include <iostream>
 #include <json_cpp/json_util.h>
+#include <json_cpp/json_base64.h>
 
 #define ESCAPED_PARSE_ERROR throw logic_error("escape sequence not implemented")
 #define STRING_PARSE_ERROR throw logic_error("error converting to string")
@@ -36,11 +37,16 @@ namespace json_cpp {
         char c;
         if (skip_blanks(i) != '"') STRING_PARSE_ERROR;
         discard(i);
+        i >> std::noskipws;
         string s;
         do {
             i >> c;
-            if (c != '"') s += c;
+            if (c == '\\') {
+                s += Json_util::read_escaped(i);
+            } else
+                if (c != '"') s += c;
         } while (c != '"');
+        i >> std::skipws;
         return s;
     }
 
@@ -103,5 +109,107 @@ namespace json_cpp {
 
     void Json_util::write_value(ostream &o,const string &v) {
         o << '"' << v << '"';
+    }
+
+    char Json_util::read_escaped(istream &i) {
+        char c;
+        i >> c;
+        switch (c){
+            case '\'':
+                return '\'';
+            case '\"':
+                return '\"';
+            case '?':
+                return '?';
+            case '\\':
+                return '\\';
+            case 'a':
+                return '\a';
+            case 'b':
+                return '\b';
+            case 'f':
+                return '\f';
+            case 'n':
+                return '\n';
+            case 'r':
+                return '\r';
+            case 't':
+                return '\t';
+            case 'v':
+                return '\v';
+            case 'x':
+                unsigned char x0,x1;
+                i>>x1;
+                i>>x0;
+                x0 =  x0 <= '9' ? x0 - '0' : x0 - 'A' + 10;
+                if (x0>=16) ESCAPED_PARSE_ERROR;
+                x1 = x1 <= '9' ? x1 - '0' : x1 - 'A' + 10;
+                if (x1>=16) ESCAPED_PARSE_ERROR;
+                return x1*16+x0;
+            default:
+                if (c>='0' && c<='9'){
+                    char n1,n0;
+                    i>>n1;
+                    if (n1>='0' && n1<='9') {
+                        i >> n0;
+                        if (n0>='0' && n0<='9') {
+                            return c * 64 + n1 * 8 + n0;
+                        }
+                    }
+                }
+                ESCAPED_PARSE_ERROR;
+        }
+        return 0;
+    }
+
+    void Json_util::write_escaped(ostream &o, const char c) {
+        switch (c){
+            case '\'':
+                o << '\\' << '\'';
+                break;
+            case '\"':
+                o << '\\' << '\"';
+                break;
+            case '?':
+                o << '\\' << '?';
+                break;
+            case '\\':
+                o << '\\' << '\\';
+                break;
+            case '\a':
+                o << '\\' << 'a';
+                break;
+            case '\b':
+                o <<  '\\' << 'b';
+                break;
+            case '\f':
+                o <<  '\\' << 'f';
+                break;
+            case '\n':
+                o << '\\' << 'n';
+                break;
+            case '\r':
+                o << '\\' << 'r';
+                break;
+            case '\t':
+                o << '\\' << 't';
+                break;
+            case '\v':
+                o << '\\' << 'v';
+                break;
+            default:
+                if (c>=32 && c<=126){
+                    o << c;
+                } else {
+                    unsigned char cx = c, c0,c1;
+                    c1 = cx >> 4;
+                    c0 = cx & 31;
+                    if (c1>9) c1 += -10 + 'A';
+                    else c1 += '0';
+                    if (c0>9) c0 += -10 + 'A';
+                    else c0 += '0';
+                    o << '\\' << 'x' << c1 << c0;
+                }
+        }
     }
 }
