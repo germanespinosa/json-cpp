@@ -29,7 +29,7 @@ namespace json_cpp {
     };
 
     template <class T>
-    T Json_from_URL(std::string &url) {
+    T Json_from_URL(const std::string &url) {
         T o;
         json_cpp::Json_web_request(json_cpp::Json_URI(url)).get_response() >> o;
         return o;
