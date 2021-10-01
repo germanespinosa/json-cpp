@@ -33,6 +33,8 @@ namespace json_cpp {
             auto &r = _value.value().get();
             if constexpr (std::is_same_v<T, std::string>) {
                 r = Json_util::read_string(i);
+            } else if constexpr (std::is_same_v<T, bool>) {
+                r = Json_util::read_bool(i);
             } else if constexpr (std::is_enum<T>::value) {
                 int ev;
                 i >> ev;
@@ -50,7 +52,14 @@ namespace json_cpp {
                     Json_util::write_escaped(o,c);
                 }
                 o << '"';
-            } else {
+            } else if constexpr (std::is_same_v<T, bool>) {
+                if (r) {
+                    o << "True";
+                } else {
+                    o << "False";
+                }
+            }
+            else {
                 o << r;
             }
         }

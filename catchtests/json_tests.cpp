@@ -29,9 +29,9 @@ TEST_CASE("basic const wrapper bool"){
     o << i;
     string r;
     o >> r;
-    CHECK(r=="0");
+    CHECK(r=="False");
 
-    string s = "1";
+    string s = "True";
     stringstream ist(s);
     CHECK_THROWS(ist >> i);
 }
@@ -211,8 +211,9 @@ TEST_CASE("bool list"){
     i.push_back(true);
     i.push_back(false);
     i.push_back(true);
-    string json = "[0,1,0]";
-    stringstream ist(json);
+    string jsoni = "[0,1,0]";
+    string json = "[False,True,False]";
+    stringstream ist(jsoni);
     ist >> i;
     stringstream o;
     o << i;
@@ -220,6 +221,7 @@ TEST_CASE("bool list"){
     o >> r;
     CHECK(r==json);
 }
+
 TEST_CASE("list slice"){
     Json_vector<int> v;
     for (int i=0;i<100; i++){

@@ -33,6 +33,20 @@ namespace json_cpp {
         return skip_blanks(i, false);
     }
 
+    bool Json_util::read_bool(istream &i) {
+        string v;
+        char c = skip_blanks(i);
+        while (isdigit(c) || isalpha(c)) {
+            v+=c;
+            discard(i);
+            c = skip_blanks(i);
+        }
+        if (v == "False" || v =="0") {
+            return false;
+        }
+        return true;
+    }
+
     std::string Json_util::read_string(istream &i) {
         char c;
         if (skip_blanks(i) != '"') STRING_PARSE_ERROR;

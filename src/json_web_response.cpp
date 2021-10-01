@@ -28,7 +28,15 @@ namespace json_cpp {
         return _byte_count;
     }
 
+    std::ostream &operator<<(ostream &o, Json_web_response &r) {
+        o << r.get_string();
+        return o;
+    }
 
+    Json_web_response &operator>>(Json_web_response &r, Json_base &j) {
+        r.get_string() >> j;
+        return r;
+    }
 }
 
 

@@ -8,6 +8,7 @@ namespace json_cpp {
         static char skip_blanks(std::istream &, bool);
         static char skip_blanks(std::istream &);
         static char read_escaped(std::istream &);
+        static bool read_bool(std::istream &);
         static std::string read_string(std::istream &);
         static double read_double(std::istream &);
         static int read_int(std::istream &);
