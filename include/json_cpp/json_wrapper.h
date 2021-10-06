@@ -54,9 +54,9 @@ namespace json_cpp {
                 o << '"';
             } else if constexpr (std::is_same_v<T, bool>) {
                 if (r) {
-                    o << "True";
+                    o << "true";
                 } else {
-                    o << "False";
+                    o << "false";
                 }
             }
             else {

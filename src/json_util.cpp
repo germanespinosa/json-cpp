@@ -41,7 +41,7 @@ namespace json_cpp {
             discard(i);
             c = skip_blanks(i);
         }
-        if (v == "False" || v =="0") {
+        if (v == "false" || v == "False" || v =="0") {
             return false;
         }
         return true;
