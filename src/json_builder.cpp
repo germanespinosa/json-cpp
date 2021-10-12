@@ -19,9 +19,20 @@ namespace json_cpp{
             string name;
             while (Json_util::skip_blanks(i) != '}') {
                 if (!Json_util::read_name(name, i)) throw logic_error("format error: field name");
-                auto &member = _member(name);
-                members_name.push_back(name);
-                member.ref->json_parse(i);
+                if (std::find(_ignored_members.begin(), _ignored_members.end(), name) != _ignored_members.end())
+                {
+                    if (Json_util::skip_blanks(i) == '"' ) {
+                        Json_util::read_string(i);
+                    } else {
+                        while (Json_util::skip_blanks(i)!=',') {
+                            Json_util::discard(i);
+                        };
+                    }
+                } else {
+                    members_name.push_back(name);
+                    auto &member = _member(name);
+                    member.ref->json_parse(i);
+                }
                 if (Json_util::skip_blanks(i) != ',') break;
                 Json_util::discard(i);
             }
@@ -67,5 +78,9 @@ namespace json_cpp{
                 if (!found) throw logic_error("member '" + member.name + "' missing and marked as mandatory");
             }
         }
+    }
+
+    void Json_builder::json_ignore_member(const std::string &member_name) {
+        _ignored_members.push_back(member_name);
     }
 }

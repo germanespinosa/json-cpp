@@ -6,6 +6,7 @@
 #define Add_member(VARIABLE) jb.json_add_member(#VARIABLE,true,std::move(Json_wrap_object(VARIABLE).get_unique_ptr()))
 #define Add_optional_member(VARIABLE) jb.json_add_member(#VARIABLE,false,std::move(Json_wrap_object(VARIABLE).get_unique_ptr()))
 #define Add_member_with_name(VARIABLE, MANDATORY, NAME) jb.json_add_member(NAME,MANDATORY,std::move(Json_wrap_object(VARIABLE).get_unique_ptr()))
+#define Ignore_member(MEMBER_NAME) jb.json_ignore_member(MEMBER_NAME)
 
 namespace json_cpp {
     struct Json_object : Json_base{

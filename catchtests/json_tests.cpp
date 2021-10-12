@@ -29,9 +29,9 @@ TEST_CASE("basic const wrapper bool"){
     o << i;
     string r;
     o >> r;
-    CHECK(r=="False");
+    CHECK(r=="false");
 
-    string s = "True";
+    string s = "true";
     stringstream ist(s);
     CHECK_THROWS(ist >> i);
 }
@@ -115,7 +115,6 @@ TEST_CASE("json builder"){
 
 }
 
-
 TEST_CASE("json object"){
     struct Test_json_object: Json_object {
         Test_json_object(int i, string s): i(i), s(s) {}
@@ -124,17 +123,19 @@ TEST_CASE("json object"){
         Json_object_members({
                              Add_member(i);
                              Add_member(s);
+                             Ignore_member("g");
+                             Ignore_member("p");
                          })
     };
     Test_json_object tjo {1,"hello"};
-    string json = "{\"i\":20,\"s\":\"bye\"}";
+    string json = "{\"i\":20,\"s\":\"bye\", \"g\":546, \"p\": \"hello\"}";
     stringstream ist(json);
     ist >> tjo;
     stringstream o;
     o << tjo;
     string r;
     o >> r;
-    CHECK(r==json);
+    CHECK(r=="{\"i\":20,\"s\":\"bye\"}");
     const Test_json_object tjo2{1,"hello"};
     stringstream o2;
     o2 << tjo2;
@@ -212,7 +213,7 @@ TEST_CASE("bool list"){
     i.push_back(false);
     i.push_back(true);
     string jsoni = "[0,1,0]";
-    string json = "[False,True,False]";
+    string json = "[false,true,false]";
     stringstream ist(jsoni);
     ist >> i;
     stringstream o;
