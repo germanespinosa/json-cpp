@@ -144,6 +144,34 @@ TEST_CASE("json object"){
     CHECK(r2=="{\"i\":1,\"s\":\"hello\"}");
 }
 
+TEST_CASE("json object 2"){
+    struct Test_json_object: Json_object {
+        Test_json_object(int i, string s): i(i), s(s) {}
+        int i;
+        string s;
+        Json_object_members({
+                                Add_member(i);
+                                Add_member(s);
+                                Ignore_additional_members();
+                            })
+    };
+    Test_json_object tjo {1,"hello"};
+    string json = "{\"i\":20,\"s\":\"bye\", \"g\":546, \"p\": \"hello\"}";
+    stringstream ist(json);
+    ist >> tjo;
+    stringstream o;
+    o << tjo;
+    string r;
+    o >> r;
+    CHECK(r=="{\"i\":20,\"s\":\"bye\"}");
+    const Test_json_object tjo2{1,"hello"};
+    stringstream o2;
+    o2 << tjo2;
+    string r2;
+    o2 >> r2;
+    CHECK(r2=="{\"i\":1,\"s\":\"hello\"}");
+}
+
 TEST_CASE("json nested object"){
     struct Test_member: Json_object {
         Test_member(int i, string s): i(i), s(s) {}
@@ -380,12 +408,6 @@ TEST_CASE("load json object from url"){
     r.get_stream() >> test_obj;
     CHECK(test_obj.member1 == "value");
     CHECK(test_obj.member2 == 5);
-}
-
-TEST_CASE("pp"){
-    auto r = Json_web_get("https://raw.githubusercontent"
-                                    ".com/germanespinosa/cellworld_data/master/world/world_0_0");
-    CHECK(25416 == r.size());
 }
 
 TEST_CASE("fix pointer"){

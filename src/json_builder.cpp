@@ -19,7 +19,9 @@ namespace json_cpp{
             string name;
             while (Json_util::skip_blanks(i) != '}') {
                 if (!Json_util::read_name(name, i)) throw logic_error("format error: field name");
-                if (std::find(_ignored_members.begin(), _ignored_members.end(), name) != _ignored_members.end())
+                auto member_index = _find_member(name);
+                if (member_index == -1) throw logic_error("member not found '" + name + "'");
+                if (member_index == -2) // ignored
                 {
                     if (Json_util::skip_blanks(i) == '"' ) {
                         Json_util::read_string(i);
@@ -30,7 +32,7 @@ namespace json_cpp{
                     }
                 } else {
                     members_name.push_back(name);
-                    auto &member = _member(name);
+                    auto &member = members[member_index];
                     member.ref->json_parse(i);
                 }
                 if (Json_util::skip_blanks(i) != ',') break;
@@ -58,13 +60,6 @@ namespace json_cpp{
         o << '}';
     }
 
-    Json_builder::Json_member &Json_builder::_member(const std::string &name) {
-        for (auto &m: members){
-            if (m.name == name) return m;
-        }
-        throw logic_error("member not found '" + name + "'");
-    }
-
     void Json_builder::_check_mandatory_members(const vector<std::string> &names) {
         for (auto &member:members){
             if (member.mandatory){
@@ -82,5 +77,20 @@ namespace json_cpp{
 
     void Json_builder::json_ignore_member(const std::string &member_name) {
         _ignored_members.push_back(member_name);
+    }
+
+    int Json_builder::_find_member(const string &name) {
+        for (unsigned int i=0;i<members.size();i++){
+            if (members[i].name == name) return i;
+        }
+        if (_ignore_additional_members) return -2;
+        for (auto &m:_ignored_members){
+            if (m == name) return -2;
+        }
+        return -1;
+    }
+
+    void Json_builder::json_ignore_additional_members() {
+        _ignore_additional_members = true;
     }
 }
