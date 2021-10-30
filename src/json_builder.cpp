@@ -23,7 +23,42 @@ namespace json_cpp{
                 if (member_index == -1) throw logic_error("member not found '" + name + "'");
                 if (member_index == -2) // ignored
                 {
-                    if (Json_util::skip_blanks(i) == '"' ) {
+                    if (Json_util::skip_blanks(i) == '{' ) {
+                        int bc = 0;
+                        do {
+                            auto c = Json_util::skip_blanks(i);
+                            switch (c){
+                                case '{':
+                                    bc++;
+                                    break;
+                                case '}':
+                                    bc--;
+                                    break;
+                                case '"':
+                                    Json_util::read_string(i);
+                                    continue;
+                            }
+                            Json_util::discard(i);
+                        } while (bc);
+                    }
+                    if (Json_util::skip_blanks(i) == '[' ) {
+                        int bc = 0;
+                        do {
+                            auto c = Json_util::skip_blanks(i);
+                            switch (c){
+                                case '[':
+                                    bc++;
+                                    break;
+                                case ']':
+                                    bc--;
+                                    break;
+                                case '"':
+                                    Json_util::read_string(i);
+                                    continue;
+                            }
+                            Json_util::discard(i);
+                        } while (bc);
+                    } else if (Json_util::skip_blanks(i) == '"' ) {
                         Json_util::read_string(i);
                     } else {
                         while (Json_util::skip_blanks(i)!=',') {

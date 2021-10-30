@@ -128,7 +128,7 @@ TEST_CASE("json object"){
                          })
     };
     Test_json_object tjo {1,"hello"};
-    string json = "{\"i\":20,\"s\":\"bye\", \"g\":546, \"p\": \"hello\"}";
+    string json = "{\"i\":20,\"s\":\"bye\", \"g\":{\"j\":5}, \"p\": \"hello\"}";
     stringstream ist(json);
     ist >> tjo;
     stringstream o;

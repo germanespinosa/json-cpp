@@ -64,7 +64,7 @@ find_package(CatchTests CONFIG QUIET)
 ### LIBRARY INSTALLATION
 ###
 
-if (CMAKE_BUILD_TYPE MATCHES Release)
+#if (CMAKE_BUILD_TYPE MATCHES Release)
     export(TARGETS json-cpp FILE JsonCppConfig.cmake)
 
     include(GNUInstallDirs)
@@ -84,4 +84,4 @@ if (CMAKE_BUILD_TYPE MATCHES Release)
 
     install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Json-cpp/Json-cppConfig.cmake \"find_package(CURL REQUIRED)\n\") ")
     install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"set(JSON-CPP_LIBRARIES json-cpp ${CURL_LIBRARIES})\n\") ")
-endif()
+#endif()
