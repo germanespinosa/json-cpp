@@ -61,7 +61,7 @@ namespace json_cpp{
                     } else if (Json_util::skip_blanks(i) == '"' ) {
                         Json_util::read_string(i);
                     } else {
-                        while (Json_util::skip_blanks(i)!=',') {
+                        while (Json_util::skip_blanks(i)!=',' && Json_util::skip_blanks(i)!='}') {
                             Json_util::discard(i);
                         };
                     }
