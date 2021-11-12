@@ -24,7 +24,7 @@ namespace json_cpp {
         return o;
     }
     template <class T>
-    T Json_create(std::string &s) {
+    T Json_create(const std::string &s) {
         T o;
         s >> o;
         return o;
