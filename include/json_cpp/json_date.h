@@ -12,6 +12,7 @@ namespace json_cpp {
         static const std::string &get_format();
         virtual void json_parse(std::istream &) override;
         virtual void json_write(std::ostream &) const override;
+        std::string to_string();
 
     private:
         date::sys_time<std::chrono::milliseconds> date_time;
