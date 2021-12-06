@@ -21,7 +21,7 @@ function build_dependency(){
     cd "$DEPENDENCY_NAME"
 
     #recursevily builds all dependencies
-    if test -f "dependencies/build_all.sf"; then
+    if test -f "dependencies/build_all.sh"; then
         cd dependencies
         build_all.sf
         cd ..
