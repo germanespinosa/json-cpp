@@ -1,6 +1,4 @@
 #!/bin/bash
-
-
 function build_dependency(){
     DEPENDENCY_NAME=$1
     echo "Building dependency: $DEPENDENCY_NAME"
