@@ -13,7 +13,7 @@ execute_process(
 
 find_package(CURL REQUIRED)
 
-set(date_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/easy-tcp/cmake-build-release/)
+set(date_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/date/cmake-build-release/)
 find_package(date REQUIRED)
 
 set (json_cpp_files
