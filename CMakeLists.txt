@@ -54,12 +54,12 @@ endif(MSVC)
 target_include_directories(json-cpp
         SYSTEM INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>)
+        $<INSTALL_INTERFACE:include>
+        $<INSTALL_INTERFACE:dependencies/date/include> )
 
 target_include_directories(json-cpp
         PRIVATE
-        include
-        dependencies/date/include)
+        include)
 
 
 ###

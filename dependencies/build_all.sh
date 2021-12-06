@@ -65,9 +65,12 @@ function update_dependency(){
   fi
 }
 
+ROOT_FOLDER=$(pwd)
+
 dependencies=()
 while IFS= read -r line
 do
+  cd "$ROOT_FOLDER"
   update_dependency $line
   build_dependency $line $@
 done < "dependencies.config"
