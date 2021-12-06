@@ -20,6 +20,13 @@ function build_dependency(){
 
     cd "$DEPENDENCY_NAME"
 
+    #recursevily builds all dependencies
+    if test -f "dependencies/build_all.sf"; then
+        cd dependencies
+        build_all.sf
+        cd ..
+    fi
+
     if [ -f "CMakeLists.txt" ]
     then
       if [ -d "./cmake-build-release" ]
@@ -48,8 +55,17 @@ function build_dependency(){
 
 git submodule update --init --recursive
 
+dependencies=()
+
 for f in *; do
     if [ -d "$f" ]; then
-        build_dependency $f $@
+        dependencies+=("$f")
     fi
+done
+ROOT_FOLDER=$(pwd)
+
+for dependency in "${dependencies[@]}"
+do
+  cd "$ROOT_FOLDER"
+  build_dependency $dependency $@
 done
