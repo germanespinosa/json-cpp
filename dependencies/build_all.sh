@@ -46,7 +46,7 @@ function build_dependency(){
     fi
 }
 
-#install_dependency date $@
+git submodule update --init --recursive
 
 for f in *; do
     if [ -d "$f" ]; then
