@@ -1,6 +1,6 @@
 #!/bin/bash
 function build_dependency(){
-    DEPENDENCY_NAME=$1
+    DEPENDENCY_NAME=$2
     echo "Building dependency: $DEPENDENCY_NAME"
     if [[ "$*1" == *"-d"*  ]]
     then
@@ -53,19 +53,44 @@ function build_dependency(){
     fi
 }
 
-git submodule update --init --recursive
+function update_dependency(){
+  echo "repository $1"
+  echo "folder $2"
+  if [ -d "$2" ];
+  then
+    cd $2
+    git pull
+  else
+    git clone $1 $2
+  fi
+}
+
+#git submodule update --init --recursive
+#
+#
+#for f in *; do
+#    if [ -d "$f" ]; then
+#        dependencies+=("$f")
+#    fi
+#done
+#ROOT_FOLDER=$(pwd)
+#
+#for dependency in "${dependencies[@]}"
+#do
+#  cd "$ROOT_FOLDER"
+#  build_dependency $dependency $@
+#done
 
 dependencies=()
-
-for f in *; do
-    if [ -d "$f" ]; then
-        dependencies+=("$f")
-    fi
-done
-ROOT_FOLDER=$(pwd)
-
-for dependency in "${dependencies[@]}"
+while IFS= read -r line
 do
-  cd "$ROOT_FOLDER"
-  build_dependency $dependency $@
-done
+  update_dependency $line
+  build_dependency $line $@
+done < "dependencies.config"
+
+#for dependency in "${dependencies[@]}"
+#do
+#  cd "$ROOT_FOLDER"
+#  update_dependency $dependency
+#  build_dependency $dependency $@
+#done

@@ -1,3 +1,0 @@
-[submodule "dependencies/date"]
-	path = dependencies/date
-	url = https://github.com/HowardHinnant/date
