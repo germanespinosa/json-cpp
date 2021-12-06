@@ -7,7 +7,13 @@ project(json-cpp
         DESCRIPTION "Json c++ library"
         LANGUAGES CXX)
 
+execute_process(
+        COMMAND bash "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/build_all.sh"
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/dependencies")
+
 find_package(CURL REQUIRED)
+
+set(date_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/easy-tcp/cmake-build-release/)
 find_package(date REQUIRED)
 
 set (json_cpp_files
@@ -52,7 +58,8 @@ target_include_directories(json-cpp
 
 target_include_directories(json-cpp
         PRIVATE
-        include )
+        include
+        dependencies/date/include)
 
 
 ###
