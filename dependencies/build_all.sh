@@ -54,32 +54,16 @@ function build_dependency(){
 }
 
 function update_dependency(){
-  echo "repository $1"
-  echo "folder $2"
+  echo "Updating dependency $2"
   if [ -d "$2" ];
   then
     cd $2
     git pull
+    cd ..
   else
     git clone $1 $2
   fi
 }
-
-#git submodule update --init --recursive
-#
-#
-#for f in *; do
-#    if [ -d "$f" ]; then
-#        dependencies+=("$f")
-#    fi
-#done
-#ROOT_FOLDER=$(pwd)
-#
-#for dependency in "${dependencies[@]}"
-#do
-#  cd "$ROOT_FOLDER"
-#  build_dependency $dependency $@
-#done
 
 dependencies=()
 while IFS= read -r line
@@ -88,9 +72,3 @@ do
   build_dependency $line $@
 done < "dependencies.config"
 
-#for dependency in "${dependencies[@]}"
-#do
-#  cd "$ROOT_FOLDER"
-#  update_dependency $dependency
-#  build_dependency $dependency $@
-#done

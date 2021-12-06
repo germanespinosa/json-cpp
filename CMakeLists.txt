@@ -8,16 +8,6 @@ project(json-cpp
         LANGUAGES CXX)
 
 execute_process(
-        COMMAND echo
-        1
-        2
-        3
-        4
-
-        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/dependencies")
-
-
-execute_process(
         COMMAND bash "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/build_all.sh"
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/dependencies")
 
