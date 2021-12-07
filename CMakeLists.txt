@@ -64,9 +64,6 @@ target_include_directories(json-cpp
         PRIVATE
         include)
 
-target_include_directories(json-cpp
-        PUBLIC
-        dependencies/date/include)
 ###
 ### TESTS
 ###
