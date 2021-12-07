@@ -7,14 +7,18 @@ project(json-cpp
         DESCRIPTION "Json c++ library"
         LANGUAGES CXX)
 
-execute_process(
-        COMMAND bash "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/build_all.sh"
-        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/dependencies")
+#execute_process(
+#        COMMAND bash "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/build_all.sh"
+#        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/dependencies")
 
 find_package(CURL REQUIRED)
 
-set(date_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/date/cmake-build-release/)
-find_package(date REQUIRED)
+include(dependencies.cmake)
+install_dependency(https://github.com/HowardHinnant/date)
+include_directories(dependencies/date/include)
+
+#set(date_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/date/cmake-build-release/)
+#find_package(date REQUIRED)
 
 set (json_cpp_files
         src/json_cpp.cpp
@@ -54,18 +58,20 @@ endif(MSVC)
 target_include_directories(json-cpp
         SYSTEM INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-        $<INSTALL_INTERFACE:dependencies/date/include> )
+        $<INSTALL_INTERFACE:include>)
 
 target_include_directories(json-cpp
         PRIVATE
         include)
 
-
 ###
 ### TESTS
 ###
-find_package(CatchTests CONFIG QUIET)
+
+install_dependency(https://github.com/germanespinosa/catch CatchTests)
+
+#find_package(CatchTests REQUIRED)
+test_library(json-cpp)
 
 ###
 ### LIBRARY INSTALLATION
