@@ -10,7 +10,7 @@ project(json-cpp
 find_package(CURL REQUIRED)
 
 ### download and install dependency library
-string(RANDOM v)
+string(TIMESTAMP v)
 file(DOWNLOAD
         https://raw.githubusercontent.com/germanespinosa/dependencies/main/dependencies.cmake?${v}
         ${CMAKE_CURRENT_BINARY_DIR}/dependencies.cmake)
