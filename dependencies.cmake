@@ -32,7 +32,7 @@ function(install_dependency git_repo)
     execute_process(COMMAND mkdir ${repo_name} -p
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} )
 
-    execute_process(COMMAND cmake ${dependency_folder}
+     execute_process(COMMAND bash -c "CXX=${CMAKE_CXX_COMPILER} CC=${CMAKE_C_COMPILER} cmake ${dependency_folder}"
             WORKING_DIRECTORY ${destination_folder})
 
     execute_process(COMMAND bash -c "[ -f dependable ]"
@@ -54,7 +54,6 @@ function(install_dependency git_repo)
     if (${variadic_count} GREATER 0)
         list(GET variadic_args 0 package_name)
         set (${package_name}_DIR ${destination_folder})
-        message("CONFIGURING PACKAGE ${package_name}")
         find_package (${package_name} REQUIRED)
     endif ()
 
@@ -62,7 +61,6 @@ endfunction()
 
 function (make_dependable)
     foreach(include_folder ${ARGN})
-        message ("cp ${include_folder}/* ${CMAKE_CURRENT_BINARY_DIR}/dependable/ -r")
         execute_process(COMMAND bash -c "cp ${include_folder}/* ${CMAKE_CURRENT_BINARY_DIR}/dependable/ -r"
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}  )
     endforeach()
