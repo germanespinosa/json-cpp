@@ -24,6 +24,14 @@ function(install_dependency git_repo)
         execute_process(COMMAND git -C ${dependencies_folder} clone ${git_repo})
     endif()
 
+    execute_process(COMMAND bash -c "[ -f include ]"
+            WORKING_DIRECTORY ${dependency_folder}
+            RESULT_VARIABLE  include_folder_exists)
+
+    if (${include_folder_exists} EQUAL 0)
+        include_directories(${dependency_folder}/include)
+    endif()
+
     set(destination_folder ${CMAKE_CURRENT_BINARY_DIR}/${repo_name})
 
     execute_process(COMMAND mkdir ${repo_name} -p
