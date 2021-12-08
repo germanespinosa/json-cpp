@@ -40,6 +40,7 @@ add_library(json-cpp ${json_cpp_files})
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
+message(" CURL_LIBRARIES: ${CURL_LIBRARIES} ")
 target_link_libraries(json-cpp
         PUBLIC
         ${CURL_LIBRARIES})
