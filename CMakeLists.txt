@@ -9,7 +9,14 @@ project(json-cpp
 
 find_package(CURL REQUIRED)
 
-include(dependencies.cmake)
+### download and install dependency library
+FILE(DOWNLOAD
+        https://raw.githubusercontent.com/germanespinosa/dependencies/main/dependencies.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/dependencies.cmake)
+
+include(${CMAKE_CURRENT_BINARY_DIR}/dependencies.cmake)
+###
+
 install_dependency(https://github.com/HowardHinnant/date)
 
 dependency_include(dependencies/date/include include)
