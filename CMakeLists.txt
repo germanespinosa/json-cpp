@@ -17,6 +17,9 @@ include(dependencies.cmake)
 install_dependency(https://github.com/HowardHinnant/date)
 include_directories(dependencies/date/include)
 
+make_dependable(dependencies/date/include)
+make_dependable(include)
+
 #set(date_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/date/cmake-build-release/)
 #find_package(date REQUIRED)
 

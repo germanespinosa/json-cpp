@@ -1,3 +1,6 @@
+make_directory (${CMAKE_CURRENT_BINARY_DIR}/dependable)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/dependable)
+
 function(install_dependency git_repo)
 
     execute_process(COMMAND basename ${git_repo}
@@ -24,14 +27,6 @@ function(install_dependency git_repo)
         execute_process(COMMAND git -C ${dependencies_folder} clone ${git_repo})
     endif()
 
-    execute_process(COMMAND bash -c "[ -f include ]"
-            WORKING_DIRECTORY ${dependency_folder}
-            RESULT_VARIABLE  include_folder_exists)
-
-    if (${include_folder_exists} EQUAL 0)
-        include_directories(${dependency_folder}/include)
-    endif()
-
     set(destination_folder ${CMAKE_CURRENT_BINARY_DIR}/${repo_name})
 
     execute_process(COMMAND mkdir ${repo_name} -p
@@ -39,6 +34,15 @@ function(install_dependency git_repo)
 
     execute_process(COMMAND cmake ${dependency_folder}
             WORKING_DIRECTORY ${destination_folder})
+
+    execute_process(COMMAND bash -c "[ -f dependable ]"
+            WORKING_DIRECTORY ${destination_folder}
+            RESULT_VARIABLE  include_folder_exists)
+
+    if (${include_folder_exists} EQUAL 0)
+        make_dependable(${destination_folder}/dependable)
+    endif()
+
 
     execute_process(COMMAND make -j
             WORKING_DIRECTORY ${destination_folder})
@@ -54,4 +58,12 @@ function(install_dependency git_repo)
         find_package (${package_name} REQUIRED)
     endif ()
 
+endfunction()
+
+function (make_dependable)
+    foreach(include_folder ${ARGN})
+        message ("cp ${include_folder}/* ${CMAKE_CURRENT_BINARY_DIR}/dependable/ -r")
+        execute_process(COMMAND bash -c "cp ${include_folder}/* ${CMAKE_CURRENT_BINARY_DIR}/dependable/ -r"
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}  )
+    endforeach()
 endfunction()
