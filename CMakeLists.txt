@@ -20,7 +20,7 @@ add_dependency_package(CURL)
 
 install_dependency(https://github.com/HowardHinnant/date)
 
-dependency_include(dependencies/date/include include)
+dependency_include(${dependencies_folder}/date/include include)
 
 set (json_cpp_files
         src/json_cpp.cpp
