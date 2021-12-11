@@ -7,14 +7,7 @@ project(json-cpp
         DESCRIPTION "Json c++ library"
         LANGUAGES CXX)
 
-### download and install dependency library
-string(TIMESTAMP v)
-file(DOWNLOAD
-        https://raw.githubusercontent.com/germanespinosa/dependencies/main/dependencies.cmake?${v}
-        ${CMAKE_CURRENT_BINARY_DIR}/dependencies.cmake)
-
-include(${CMAKE_CURRENT_BINARY_DIR}/dependencies.cmake)
-###
+find_package(Dependencies)
 
 add_dependency_package(CURL)
 
