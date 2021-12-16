@@ -7,8 +7,13 @@ project(json-cpp
         DESCRIPTION "Json c++ library"
         LANGUAGES CXX)
 
-find_package(CURL REQUIRED)
-find_package(date REQUIRED)
+find_package(Dependencies)
+
+add_dependency_package(CURL)
+
+install_dependency(https://github.com/HowardHinnant/date)
+
+dependency_include(${dependencies_folder}/date/include include)
 
 set (json_cpp_files
         src/json_cpp.cpp
@@ -52,36 +57,35 @@ target_include_directories(json-cpp
 
 target_include_directories(json-cpp
         PRIVATE
-        include )
-
+        include)
 
 ###
 ### TESTS
 ###
-find_package(CatchTests CONFIG QUIET)
+
+install_dependency(https://github.com/germanespinosa/catch CatchTests)
+test_library(json-cpp)
 
 ###
 ### LIBRARY INSTALLATION
 ###
 
-#if (CMAKE_BUILD_TYPE MATCHES Release)
-    export(TARGETS json-cpp FILE JsonCppConfig.cmake)
+export(TARGETS json-cpp FILE JsonCppConfig.cmake)
 
-    include(GNUInstallDirs)
+include(GNUInstallDirs)
 
-    install(TARGETS json-cpp EXPORT Json-cppConfig
-            ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS json-cpp EXPORT Json-cppConfig
+        ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-    install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-    install(EXPORT Json-cppConfig
-            DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/Json-cpp
-            EXPORT_LINK_INTERFACE_LIBRARIES)
+install(EXPORT Json-cppConfig
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/Json-cpp
+        EXPORT_LINK_INTERFACE_LIBRARIES)
 
-    export(TARGETS json-cpp FILE Json-cppConfig.cmake)
+export(TARGETS json-cpp FILE Json-cppConfig.cmake)
 
-    install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Json-cpp/Json-cppConfig.cmake \"find_package(CURL REQUIRED)\n\") ")
-    install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"set(JSON-CPP_LIBRARIES json-cpp ${CURL_LIBRARIES})\n\") ")
-#endif()
+install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Json-cpp/Json-cppConfig.cmake \"find_package(CURL REQUIRED)\n\") ")
+install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"set(JSON-CPP_LIBRARIES json-cpp ${CURL_LIBRARIES})\n\") ")
