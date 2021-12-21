@@ -12,16 +12,17 @@ namespace json_cpp{
     void Json_date::json_parse(std::istream &i) {
         string d = Json_util::read_string(i);
         std::istringstream ss{d};
-        ss >> date::parse("%Y-%m-%d %T", date_time);
+        ss >> date::parse("%Y-%m-%d %T", *this);
     }
 
     void Json_date::json_write(std::ostream &o) const {
-        o << '"' << date::format(time_format, date_time) << '"';
+        o << '"' << date::format(time_format, *this) << '"';
     }
 
     Json_date Json_date::now() {
         Json_date jd;
-        jd.date_time = round<milliseconds>(system_clock::now());
+        date::sys_time<std::chrono::milliseconds> &d = jd;
+        d = round<milliseconds>(system_clock::now());
         return jd;
     }
 
@@ -34,6 +35,7 @@ namespace json_cpp{
     }
 
     std::string Json_date::to_string() {
-        return date::format(time_format, date_time);
+        return date::format(time_format, *this);
     }
+
 }
