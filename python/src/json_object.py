@@ -1,8 +1,16 @@
 import json
-from .util import check_type
+from .util import check_type, unique_string
+
+
+class classorinstancemethod(classmethod):
+
+    def __get__(self, instance, type_):
+        descr_get = super().__get__ if instance is None else self.__func__.__get__
+        return descr_get(instance, type_)
 
 
 class JsonObject:
+
     def __str__(self):
         s = ""
         v = vars(self)
@@ -58,30 +66,56 @@ class JsonObject:
                 format_string = format_string[:pos] + sub_str + format_string[sub_format_end:]
         return format_string.format(**vars(self))
 
-    @classmethod
-    def bar(cls):
-        print(type(cls))
-        print(cls)
-        print(isinstance(cls, JsonObject))
-
-    @classmethod
-    def parse(cls, json_string="", json_dictionary=None):
+    @classorinstancemethod
+    def parse(cls_or_self, json_string="", json_dictionary=None):
         if json_string:
             check_type(json_string, str, "wrong type for json_string")
             json_dictionary = json.loads(json_string)
 
         check_type(json_dictionary, dict, "wrong type for json_dictionary")
-        new_object = cls()
+        if type(cls_or_self) is type:
+            new_object = cls_or_self()
+        else:
+            new_object = cls_or_self
         for key in json_dictionary:
-            it = type(getattr(new_object, key))
+            member = getattr(new_object, key)
+            it = type(member)
             if issubclass(it, JsonObject):
                 av = it.parse(json_dictionary=json_dictionary[key])
+                setattr(new_object, key, av)
             elif issubclass(it, JsonList):
-                av = it.parse(json_list=json_dictionary[key])
+                member.parse(json_list=json_dictionary[key])
             else:
                 av = it(json_dictionary[key])
-            setattr(new_object, key, av)
+                setattr(new_object, key, av)
         return new_object
+
+    @staticmethod
+    def load(json_string="", json_dictionary_or_list=None) -> type:
+        if json_string:
+            check_type(json_string, str, "wrong type for json_string")
+            json_dictionary_or_list = json.loads(json_string)
+        class_name = "Json_object_" + unique_string()
+        constructor_string = "def " + class_name + "__init__ (self):"
+        if isinstance(json_dictionary_or_list, list):
+            new_list = JsonList(list_type=None)
+            for item in json_dictionary_or_list:
+                new_item = JsonObject.load(json_dictionary_or_list=item)
+                new_list.list_type = type(new_item)
+                new_list.append(new_item)
+            return new_list
+        elif isinstance(json_dictionary_or_list, dict):
+            for key in json_dictionary_or_list.keys():
+                if isinstance(json_dictionary_or_list[key], dict) or isinstance(json_dictionary_or_list[key], list):
+                    constructor_string += "\n\tself." + key + " = self.load(json_string='" + json.dumps(json_dictionary_or_list[key]) + "')"
+                else:
+                    constructor_string += "\n\tself." + key + " = " + json_dictionary_or_list[key].__repr__()
+            d = {}
+            exec(constructor_string, d)
+            new_type = type(class_name, (JsonObject, ), {"__init__": d[class_name + "__init__"]})
+            return new_type()
+        else:
+            raise TypeError("wrong type for json_dictionary_or_list")
 
 
 class JsonList(list):
@@ -93,9 +127,12 @@ class JsonList(list):
         list.__init__(self, iterable)
         self.list_type = list_type
 
-
     def _typeCheck(self, val):
-        check_type(val, self.list_type, "Wrong type %s, this list can hold only instances of %s" % (type(val), str(self.list_type)))
+        if self.list_type:
+            check_type(val, self.list_type, "Wrong type %s, this list can hold only instances of %s" % (type(val), str(self.list_type)))
+        else:
+            if not (issubclass(type(val), JsonObject) or isinstance(val, (str, int, float, bool, JsonList))):
+                raise TypeError("Wrong type %s, this list can hold only str, int, float, bool, JsonObject or JsonList" % (type(val),))
 
     def __iadd__(self, other):
         map(self._typeCheck, other)
@@ -139,7 +176,7 @@ class JsonList(list):
         list.insert(self, i, val)
 
     def __str__(self):
-        return "[" + ",".join([str(x) for x in self]) + "]"
+        return "[" + ",".join([json.dumps(x) if type(x) is str else str(x) for x in self]) + "]"
 
     def get(self, m):
         it = type(vars(self.list_type)[m])
@@ -162,13 +199,16 @@ class JsonList(list):
     def copy(self):
         return type(self).parse(str(self))
 
-    @classmethod
-    def parse(cls, json_string="", json_list=None):
+    @classorinstancemethod
+    def parse(cls_or_self, json_string="", json_list=None):
         if json_string:
             check_type(json_string, str, "wrong type for json_string")
             json_list = json.loads(json_string)
         check_type(json_list, list, "wrong type for json_list")
-        new_list = cls()
+        if type(cls_or_self) is type:
+            new_list = cls_or_self()
+        else:
+            new_list = cls_or_self
         it = new_list.list_type
         ic = it().__class__
         for i in json_list:
