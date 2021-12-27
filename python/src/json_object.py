@@ -11,6 +11,11 @@ class classorinstancemethod(classmethod):
 
 class JsonObject:
 
+    def __init__(self, **kwargs):
+        if type(self) is JsonObject:
+            for key, value in kwargs.items():
+                setattr(self, key, value)
+
     def __str__(self):
         s = ""
         v = vars(self)

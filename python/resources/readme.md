@@ -11,15 +11,17 @@ pip install json-cpp
 After installing the package, try the following python script:
 ```
 from json_cpp import JsonObject
-myobject = JsonObject()
-myobject.name = "German Espinosa"
-myobject.age = 41
-myobject.weight = 190.0
+myobject = JsonObject(name="German Espinosa",age=41,weight=190.0)
+print("name:", myobject.name, type(myobject.name).__name__)
+print("age:", myobject.age, type(myobject.age).__name__)
+print("weight:", myobject.weight, type(myobject.weight).__name__)
 print(myobject)
-
 ```
 output
 ```
+name: German Espinosa str
+age: 41 int
+weight: 190.0 float
 {"name":"German Espinosa","age":41,"weight":190.0}
 ```
 ###Loading json_data:

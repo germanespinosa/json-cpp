@@ -1,11 +1,3 @@
-from json_cpp import JsonObject, JsonList
+from src import *
 
-class Person(JsonObject):
-    def __init__(self):
-        self.name = ""
-        self.surname = ""
-        self.languages = JsonList(list_type=str)
-
-person = Person.parse("{\"name\":\"German\",\"surname\":\"Espinosa\", \"languages\":[\"english\",\"spanish\",\"portuguese\"]}")
-
-print(person)
+print(JsonObject(a=1, b=1.2, c=True, d=JsonObject(e=1)))
