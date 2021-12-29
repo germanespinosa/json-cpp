@@ -105,8 +105,10 @@ class JsonObject:
         if isinstance(json_dictionary_or_list, list):
             new_list = JsonList(list_type=None)
             for item in json_dictionary_or_list:
-                new_item = JsonObject.load(json_dictionary_or_list=item)
-                new_list.list_type = type(new_item)
+                if isinstance(item, list) or isinstance(item, dict):
+                    new_item = JsonObject.load(json_dictionary_or_list=item)
+                else:
+                    new_item = item
                 new_list.append(new_item)
             return new_list
         elif isinstance(json_dictionary_or_list, dict):
