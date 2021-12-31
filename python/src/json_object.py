@@ -186,10 +186,10 @@ class JsonList(list):
         return "[" + ",".join([json.dumps(x) if type(x) is str else str(x) for x in self]) + "]"
 
     def get(self, m):
-        it = type(vars(self.list_type)[m])
-        l = JsonList(list_type=it)
+        l = JsonList()
         for i in self:
-            l.append(vars(i)[m])
+            if m in vars(i):
+                l.append(vars(i)[m])
         return l
 
     def where(self, m, v, o="=="):
