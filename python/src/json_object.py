@@ -1,6 +1,6 @@
 import json
 from .util import check_type, unique_string
-
+from datetime import datetime
 
 class classorinstancemethod(classmethod):
 
@@ -27,6 +27,8 @@ class JsonObject:
             s += "\"%s\":" % k
             if isinstance(v[k], str):
                 s += "%s" % json.dumps(v[k])
+            elif isinstance(v[k], datetime):
+                s += "\"%s\"" % str(v[k])
             elif isinstance(v[k], bool):
                 s += "%s" % str(v[k]).lower()
             else:
