@@ -2,11 +2,16 @@ import json
 from .util import check_type, unique_string
 from datetime import datetime
 
+
 class classorinstancemethod(classmethod):
 
     def __get__(self, instance, type_):
         descr_get = super().__get__ if instance is None else self.__func__.__get__
         return descr_get(instance, type_)
+
+
+class JsonDate:
+    date_format = '%Y-%m-%d %H:%M:%S.%f'
 
 
 class JsonObject:
@@ -28,7 +33,7 @@ class JsonObject:
             if isinstance(v[k], str):
                 s += "%s" % json.dumps(v[k])
             elif isinstance(v[k], datetime):
-                s += "\"%s\"" % str(v[k])
+                s += "\"%s\"" % v[k].strftime(JsonDate.date_format)
             elif isinstance(v[k], bool):
                 s += "%s" % str(v[k]).lower()
             else:
@@ -50,8 +55,7 @@ class JsonObject:
     def copy(self):
         return type(self).parse(str(self))
 
-    def format(self, format_string):
-        check_type(format_string, str, "wrong type for format_string")
+    def format(self, format_string: str):
         v = vars(self)
         for k in v:
             if not isinstance(v[k], JsonObject):
@@ -74,12 +78,10 @@ class JsonObject:
         return format_string.format(**vars(self))
 
     @classorinstancemethod
-    def parse(cls_or_self, json_string="", json_dictionary=None):
+    def parse(cls_or_self, json_string: str = "", json_dictionary: dict=None):
         if json_string:
-            check_type(json_string, str, "wrong type for json_string")
             json_dictionary = json.loads(json_string)
 
-        check_type(json_dictionary, dict, "wrong type for json_dictionary")
         if type(cls_or_self) is type:
             new_object = cls_or_self()
         else:
@@ -92,13 +94,16 @@ class JsonObject:
                 setattr(new_object, key, av)
             elif issubclass(it, JsonList):
                 member.parse(json_list=json_dictionary[key])
+            elif it is datetime:
+                av = datetime.strptime(json_dictionary[key], JsonDate.date_format)
+                setattr(new_object, key, av)
             else:
                 av = it(json_dictionary[key])
                 setattr(new_object, key, av)
         return new_object
 
     @staticmethod
-    def load(json_string="", json_dictionary_or_list=None) -> type:
+    def load(json_string: str = "", json_dictionary_or_list=None) -> type:
         if json_string:
             check_type(json_string, str, "wrong type for json_string")
             json_dictionary_or_list = json.loads(json_string)
