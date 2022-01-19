@@ -13,6 +13,7 @@ namespace json_cpp {
         virtual void json_parse(std::istream &) override;
         virtual void json_write(std::ostream &) const override;
         std::string to_string();
+        std::string to_string(const std::string &format);
     private:
         static std::string time_format;
     };

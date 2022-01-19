@@ -38,4 +38,7 @@ namespace json_cpp{
         return date::format(time_format, *this);
     }
 
+    std::string Json_date::to_string(const string &format) {
+        return date::format(format, *this);
+    }
 }
