@@ -2,6 +2,7 @@ import json
 from .util import check_type, unique_string
 from datetime import datetime
 import requests
+from os import path
 
 class classorinstancemethod(classmethod):
 
@@ -137,6 +138,8 @@ class JsonObject:
 
     @classmethod
     def load_from_file(cls, file_path: str):
+        if not path.exists(file_path):
+            return None
         json_content = ""
         with open(file_path) as f:
             json_content = f.read()
