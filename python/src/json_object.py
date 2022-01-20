@@ -1,7 +1,7 @@
 import json
 from .util import check_type, unique_string
 from datetime import datetime
-
+import requests
 
 class classorinstancemethod(classmethod):
 
@@ -130,6 +130,30 @@ class JsonObject:
             return new_type()
         else:
             raise TypeError("wrong type for json_dictionary_or_list")
+
+    def save(self, file_path: str):
+        with open(file_path, 'w') as f:
+            f.write(str(self))
+
+    @classmethod
+    def load_from_file(cls, file_path: str):
+        json_content = ""
+        with open(file_path) as f:
+            json_content = f.read()
+        if cls is JsonObject:
+            return cls.parse(json_content)
+        else:
+            return cls.load(json_content)
+
+    @classmethod
+    def load_from_url(cls, uri: str):
+        req = requests.get(uri)
+        if req.status_code == 200:
+            if cls is JsonObject:
+                return cls.parse(req.text)
+            else:
+                return cls.load(req.text)
+        return None
 
 
 class JsonList(list):
