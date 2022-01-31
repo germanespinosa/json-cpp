@@ -144,18 +144,18 @@ class JsonObject:
         with open(file_path) as f:
             json_content = f.read()
         if cls is JsonObject:
-            return cls.parse(json_content)
-        else:
             return cls.load(json_content)
+        else:
+            return cls.parse(json_content)
 
     @classmethod
     def load_from_url(cls, uri: str):
         req = requests.get(uri)
         if req.status_code == 200:
             if cls is JsonObject:
-                return cls.parse(req.text)
-            else:
                 return cls.load(req.text)
+            else:
+                return cls.parse(req.text)
         return None
 
 
