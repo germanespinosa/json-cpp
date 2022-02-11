@@ -29,6 +29,7 @@ namespace json_cpp {
             port = protocol == http?80:443;
         }
         getline(ss, query_string);
+        cout << query_string << endl;
     }
 
     Json_URI::Json_URI() {

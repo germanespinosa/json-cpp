@@ -403,7 +403,7 @@ TEST_CASE("load json object from url"){
         int member2{};
     };
     Test_obj test_obj;
-    string url ("https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/test.json");
+    string url ("https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/world_configuration/hexagonal?r=1644602359099");
     auto r = Json_web_get(url);
     r.get_stream() >> test_obj;
     CHECK(test_obj.member1 == "value");
