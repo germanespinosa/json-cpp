@@ -1,41 +1,43 @@
 #include <json_cpp/json_web_response.h>
+#include <unistd.h>
 
 using namespace std;
 
 namespace json_cpp {
 
-    Json_web_response::Json_web_response(size_t s) {
-        _content.reserve(s);
-        _byte_count = 0;
-    }
-
-    void Json_web_response::push_data(char *buffer, size_t l)  {
-        for (size_t i=0;i<l;i++)
-            _content += buffer[i];
-        _byte_count += l;
-    }
-
-    const std::string &Json_web_response::get_string() const {
-        return _content;
-    }
-
-    std::istream &Json_web_response::get_stream() {
-        _content_stream = std::stringstream (_content);
-        return _content_stream;
-    }
-
-    size_t Json_web_response::size() const {
-        return _byte_count;
+    std::string Json_web_response::get_string() const {
+        std::stringstream buffer;
+        buffer << ifs.rdbuf();
+        return buffer.str();
     }
 
     std::ostream &operator<<(ostream &o, Json_web_response &r) {
-        o << r.get_string();
+        o << r.get_stream().rdbuf();
         return o;
     }
 
     Json_web_response &operator>>(Json_web_response &r, Json_base &j) {
-        r.get_string() >> j;
+        r.get_stream() >> j;
         return r;
+    }
+
+    std::istream &Json_web_response::get_stream() {
+        return ifs;
+    }
+
+    Json_web_response::Json_web_response(const string &file_path) : _file_path(file_path) {
+        ifs.open (_file_path.c_str(), std::ifstream::in);
+    }
+
+    Json_web_response::~Json_web_response() {
+        unlink(_file_path.c_str());
+
+    }
+
+    void Json_web_response::save(const string &file_name) {
+        ofstream dest(file_name.c_str());
+        dest << ifs.rdbuf();
+        dest.close();
     }
 }
 

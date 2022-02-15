@@ -2,7 +2,7 @@
 #include <iostream>
 #include <curl/curl.h>
 #include <json_cpp/json_web_response.h>
-#define Json_web_get(URL) json_cpp::Json_web_request(json_cpp::Json_URI(URL)).get_response()
+#define Json_web_get(URL, ...) json_cpp::Json_web_request(json_cpp::Json_URI(URL)).get_response()__VA_OPT__(.get<__VA_ARGS__>())
 
 namespace json_cpp {
 

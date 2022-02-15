@@ -2,6 +2,7 @@
 #include <string>
 #include <json_cpp/json_web_request.h>
 #include <cstring>
+#include <unistd.h>
 
 using namespace std;
 namespace json_cpp {
@@ -49,48 +50,44 @@ namespace json_cpp {
         return o;
     }
 
-    size_t ignore_data(void *, size_t size, size_t nmemb, void *) { return size * nmemb; }
-    size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp) {
-        auto r = (Json_web_response *)userp;
-        r->push_data((char *) buffer, size * nmemb);
-        return size * nmemb;
+    std::string gen_random(const int len) {
+        static const char alphanum[] =
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                "abcdefghijklmnopqrstuvwxyz";
+        std::string tmp_s;
+        tmp_s.reserve(len);
+
+        for (int i = 0; i < len; ++i) {
+            tmp_s += alphanum[rand() % (sizeof(alphanum) - 1)];
+        }
+
+        return tmp_s;
     }
 
     Json_web_response Json_web_request::get_response() {
         auto url = uri.url();
-        CURL *curl = curl_easy_init();
-        if(!curl) throw logic_error("failed to create curl object");
-        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_HEADER, 1);
-        curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, ignore_data);
-
-        struct curl_slist *headers=NULL;
-        curl_slist_append(headers, "Cache-Control: max-age=0");
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-
+        CURL *curl;
+        FILE *fp;
         CURLcode res;
-        res = curl_easy_perform(curl);
-        curl_off_t ct;
-        res = curl_easy_getinfo(curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD_T, &ct);
-        if (res != CURLE_OK) throw logic_error("failed to retrieve response info");
-        if (ct < 0) throw logic_error("failed to retrieve '" + url + "'");
-
-        curl_easy_cleanup(curl);
-
         curl = curl_easy_init();
-        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-        Json_web_response r(ct);
-        auto v = (void *) &r;
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, v);
-        res = curl_easy_perform(curl);
-        if (res != CURLE_OK) throw logic_error("failed to retrieve content from '" + url + "'");
-
-        curl_easy_cleanup(curl);
-        return r;
+        if (curl)
+        {
+            auto outfilename = "json_" + gen_random(10);
+            fp = fopen(outfilename.c_str(),"wb");
+            curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
+            curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+            res = curl_easy_perform(curl);
+            curl_easy_cleanup(curl);
+            fclose(fp);
+            if (res == CURLE_OK) {
+                return Json_web_response(outfilename);
+            } else {
+                throw logic_error("failed to download the content");
+            }
+        } else {
+            throw logic_error("failed to create curl object");
+        }
     }
 
     Json_web_request::Json_web_request(Json_URI uri) : uri(uri) {}

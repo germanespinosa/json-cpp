@@ -1,8 +1,7 @@
 #include<catch.h>
 #include<json_cpp.h>
 #include<iostream>
-#include<sstream>
-#include <cstring>
+#include<cstring>
 
 using namespace json_cpp;
 using namespace std;
@@ -393,23 +392,6 @@ TEST_CASE("Uri load") {
     CHECK(url == "http://www.google.com:65/query123?123/1");
 }
 
-TEST_CASE("load json object from url"){
-    struct Test_obj : Json_object{
-        Json_object_members({
-            Add_member(member1);
-            Add_member(member2);
-        })
-        string member1;
-        int member2{};
-    };
-    Test_obj test_obj;
-    string url ("https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/world_configuration/hexagonal?r=1644602359099");
-    auto r = Json_web_get(url);
-    r.get_stream() >> test_obj;
-    CHECK(test_obj.member1 == "value");
-    CHECK(test_obj.member2 == 5);
-}
-
 TEST_CASE("fix pointer"){
     struct Test_object : Json_object{
         Test_object():Json_object(){}
@@ -541,3 +523,89 @@ TEST_CASE("json_date") {
     cout << t << endl;
 }
 
+struct Transformation : json_cpp::Json_object{
+    double size{};
+    double rotation{};
+    Json_object_members({
+                            Add_member(size);
+                            Add_member(rotation);
+                        });
+};
+
+struct Location : json_cpp::Json_object {
+    double x{}, y{};
+    Json_object_members({
+                            Add_member(x);
+                            Add_member(y);
+                        })
+};
+
+struct Location_list : json_cpp::Json_vector<Location> {
+};
+
+
+struct Shape : json_cpp::Json_object{
+    int sides{};
+    Json_object_members({
+                            Add_member(sides);
+                        })
+};
+
+struct Space : json_cpp::Json_object{
+    enum Orientation{
+        Flipped = -1,
+        Not_flipped = 1
+    };
+    Location center;
+    Shape shape;
+    Transformation transformation;
+    Json_object_members({
+                            Add_member(center);
+                            Add_member(shape);
+                            Add_member(transformation);
+                        })
+};
+
+struct World_implementation : json_cpp::Json_object{
+    Location_list cell_locations;
+    Space space;
+    Transformation cell_transformation;
+    Json_object_members({
+                            Add_member(cell_locations);
+                            Add_member(space);
+                            Add_member(cell_transformation);
+                        })
+};
+
+
+
+TEST_CASE("world_implementation"){
+    string url ("https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/world_implementation/hexagonal.vr");
+    World_implementation wi;
+    for (int i = 0; i < 10000; i++) {
+        cout << "sending the request" << endl;
+        Json_web_get(url, World_implementation);
+        cout << "response: " << wi << endl;
+    }
+
+}
+
+TEST_CASE("file_download")
+{
+    CURL *curl;
+    FILE *fp;
+    CURLcode res;
+    char *url = "https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/world_implementation/hexagonal.vr";
+    char out_filename[FILENAME_MAX] = "page.html";
+    curl = curl_easy_init();
+    if (curl)
+    {
+        fp = fopen(out_filename,"wb");
+        curl_easy_setopt(curl, CURLOPT_URL, url);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+        res = curl_easy_perform(curl);
+        curl_easy_cleanup(curl);
+        fclose(fp);
+    }
+}
