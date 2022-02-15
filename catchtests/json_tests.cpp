@@ -582,7 +582,7 @@ struct World_implementation : json_cpp::Json_object{
 TEST_CASE("world_implementation"){
     string url ("https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/world_implementation/hexagonal.vr");
     World_implementation wi;
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < 100; i++) {
         cout << "sending the request" << endl;
         Json_web_get(url, World_implementation);
         cout << "response: " << wi << endl;
