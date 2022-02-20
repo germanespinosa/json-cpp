@@ -81,9 +81,9 @@ namespace json_cpp {
             curl_easy_cleanup(curl);
             fclose(fp);
             if (res == CURLE_OK) {
-                return Json_web_response(outfilename);
+                return Json_web_response(outfilename, url);
             } else {
-                throw logic_error("failed to download the content");
+                throw logic_error("failed to download content from " + url);
             }
         } else {
             throw logic_error("failed to create curl object");

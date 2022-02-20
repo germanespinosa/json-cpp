@@ -25,7 +25,9 @@ namespace json_cpp {
         return ifs;
     }
 
-    Json_web_response::Json_web_response(const string &file_path) : _file_path(file_path) {
+    Json_web_response::Json_web_response(const string &file_path, const string &url) :
+        _file_path(file_path),
+        url(url){
         ifs.open (_file_path.c_str(), std::ifstream::in);
     }
 

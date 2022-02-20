@@ -4,6 +4,7 @@
 #include <json_cpp/json_base.h>
 #include <fstream>
 #include <iostream>
+#include <typeinfo>
 
 namespace json_cpp {
     struct Json_web_response{
@@ -15,13 +16,18 @@ namespace json_cpp {
         template <class T>
         T get() {
             T o;
-            get_stream() >> o;
+            try {
+                get_stream() >> o;
+            } catch (...) {
+                throw std::logic_error("failed to load content from " + url + " into variable of type " + typeid(o).name() );
+            }
             return o;
         }
         ~Json_web_response();
     private:
-        explicit Json_web_response(const std::string &);
+        explicit Json_web_response(const std::string &, const std::string &);
         const std::string _file_path;
+        const std::string url;
         std::ifstream ifs;
         friend struct Json_web_request;
     };
