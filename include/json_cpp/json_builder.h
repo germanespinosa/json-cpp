@@ -19,6 +19,7 @@ namespace json_cpp {
             std::unique_ptr<Json_wrapped> ref;
         };
         std::vector<Json_member> members;
+        bool case_sensitive = true;
     private:
         int _find_member(const std::string &);
         void _check_mandatory_members(const std::vector<std::string> &);

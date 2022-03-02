@@ -1,5 +1,8 @@
 #include <json_cpp/json_builder.h>
 #include <json_cpp/json_util.h>
+#include <algorithm>
+
+#define ToLower(STRING) transform(STRING.begin(), STRING.end(), STRING.begin(), ::tolower)
 
 using namespace  std;
 
@@ -9,7 +12,11 @@ namespace json_cpp{
         name(name), mandatory(mandatory), ref(std::move(ref)){ }
 
     void Json_builder::json_add_member(std::string name, bool mandatory, std::unique_ptr<Json_wrapped> ref) {
-        members.emplace_back(name, mandatory, std::move(ref));
+        auto case_name = name;
+        if (!case_sensitive) {
+            ToLower(case_name);
+        }
+        members.emplace_back(case_name, mandatory, std::move(ref));
     }
 
     void Json_builder::json_parse(istream &i) {
@@ -115,12 +122,16 @@ namespace json_cpp{
     }
 
     int Json_builder::_find_member(const string &name) {
-        for (unsigned int i=0;i<members.size();i++){
-            if (members[i].name == name) return i;
+        string cased_name = name;
+        if (!case_sensitive) {
+            ToLower(cased_name);
+        }
+        for (unsigned int i = 0; i < members.size(); i++) {
+            if (members[i].name == cased_name) return i;
         }
         if (_ignore_additional_members) return -2;
-        for (auto &m:_ignored_members){
-            if (m == name) return -2;
+        for (auto &m: _ignored_members) {
+            if (m == cased_name) return -2;
         }
         return -1;
     }
