@@ -182,7 +182,7 @@ class JsonList(list):
 
     def __add__(self, other):
         iterable = [item for item in self] + [item for item in other]
-        return JsonList(iterable, self._allowedType)
+        return JsonList(iterable, self.list_type)
 
     def __radd__(self, other):
         iterable = [item for item in other] + [item for item in self]
