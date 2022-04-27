@@ -41,6 +41,9 @@ class JsonObject:
                 s += "%s" % str(v[k])
         return "{%s}" % s
 
+    def __repr__(self):
+        return str(self)
+
     def __eq__(self, other):
         if type(self) is not type(other):
             return False
@@ -218,6 +221,9 @@ class JsonList(list):
 
     def __str__(self):
         return "[" + ",".join([json.dumps(x) if type(x) is str else str(x) for x in self]) + "]"
+
+    def __repr__(self):
+        return str(self)
 
     def get(self, m):
         l = JsonList()
