@@ -173,6 +173,8 @@ class JsonList(list):
 
     def _typeCheck(self, val):
         if self.list_type:
+            if self.list_type is float and type(val) is int: #json ints can also be floats
+                val = float(val)
             check_type(val, self.list_type, "Wrong type %s, this list can hold only instances of %s" % (type(val), str(self.list_type)))
         else:
             if not (issubclass(type(val), JsonObject) or isinstance(val, (str, int, float, bool, JsonList))):
