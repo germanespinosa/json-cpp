@@ -58,7 +58,7 @@ namespace json_cpp {
         }
 
         int index_of(const T &o) const {
-            for (int i=0;i<this->size(); i++) if (*this[i]==o) return i;
+            for (int i=0;i<this->size(); i++) if ((*this)[i]==o) return i;
             return -1;
         }
 
