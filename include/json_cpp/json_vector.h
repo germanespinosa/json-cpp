@@ -63,7 +63,7 @@ namespace json_cpp {
         }
 
         bool contains(const T &o) const {
-            return index_of(o) != -1
+            return index_of(o) != -1;
         }
     };
 }
