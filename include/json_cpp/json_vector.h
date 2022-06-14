@@ -68,6 +68,7 @@ namespace json_cpp {
 
         Json_vector<T> &operator = (const std::vector<T>&v) {
             for (const auto &i:v) this->push_back(i);
+            return *this;
         };
     };
 }
