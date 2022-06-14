@@ -94,10 +94,12 @@ namespace json_cpp{
         bool first = true;
         o << '{';
         for (auto &m:members){
-            if (!first) o<< ',';
-            first = false;
-            o<< '"' << m.name << '"' << ':';
-            m.ref->json_write(o);
+            if (m.mandatory || !m.ref->empty()) {
+                if (!first) o << ',';
+                first = false;
+                o << '"' << m.name << '"' << ':';
+                m.ref->json_write(o);
+            }
         }
         o << '}';
     }

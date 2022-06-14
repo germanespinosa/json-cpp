@@ -21,6 +21,7 @@ namespace json_cpp {
     struct Json_wrapped : Json_base{
             virtual std::unique_ptr<Json_wrapped> get_unique_ptr() = 0;
             virtual std::unique_ptr<Json_wrapped> get_unique_ptr() const = 0;
+            virtual bool empty() const = 0;
         };
 
     template <class T>
@@ -68,6 +69,16 @@ namespace json_cpp {
         }
         std::unique_ptr<Json_wrapped> get_unique_ptr() override {
             return std::make_unique<Json_object_wrapper<T>>(*this);
+        }
+
+        bool empty() const override {
+            if constexpr (std::is_base_of<Json_base, T>::value) {
+                return false;
+            } else {
+                T p{};
+                const auto &r = _cvalue.get();
+                return  p == r;
+            }
         }
     private:
         std::optional<std::reference_wrapper<T>> _value ;
