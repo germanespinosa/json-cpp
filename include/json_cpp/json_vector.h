@@ -65,5 +65,9 @@ namespace json_cpp {
         bool contains(const T &o) const {
             return index_of(o) != -1;
         }
+
+        Json_vector<T> &operator = (const std::vector<T>&v) {
+            for (const auto &i:v) this->push_back(i);
+        };
     };
 }
