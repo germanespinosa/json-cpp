@@ -268,3 +268,21 @@ class JsonList(list):
             else:
                 new_list.append(i)
         return new_list
+
+    def save(self, file_path: str):
+        with open(file_path, 'w') as f:
+            f.write(str(self))
+
+    def load_from_file(self, file_path: str):
+        if not path.exists(file_path):
+            return None
+        json_content = ""
+        with open(file_path) as f:
+            json_content = f.read()
+        return self.parse(json_content)
+
+    def load_from_url(self, uri: str):
+        req = requests.get(uri)
+        if req.status_code == 200:
+            return self.parse(req.text)
+        return None
