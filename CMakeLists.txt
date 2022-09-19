@@ -31,7 +31,7 @@ set (json_cpp_files
 
 add_library(json-cpp ${json_cpp_files})
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -fPIC")
 
 target_link_libraries(json-cpp
         PUBLIC

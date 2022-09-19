@@ -66,6 +66,17 @@ namespace json_cpp {
             return index_of(o) != -1;
         }
 
+        T get_item_at(int index) {
+            return (*(this))[index];
+        }
+
+        void set_item_at(int index, T &item) {
+            if (index >= this->size()) {
+                throw std::runtime_error("key " + std::to_string(index) + " not found.");
+            }
+            (*(this))[index] = item;
+        }
+
         Json_vector<T> &operator = (const std::vector<T>&v) {
             this->clear();
             for (const auto &i:v) this->push_back(i);

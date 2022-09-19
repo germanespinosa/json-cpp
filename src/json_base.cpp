@@ -78,4 +78,8 @@ namespace json_cpp {
         s << *(this);
         return s;
     }
+
+    void Json_base::from_json(const string &s) {
+        s >> *(this);
+    }
 }

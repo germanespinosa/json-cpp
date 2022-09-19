@@ -9,6 +9,7 @@ namespace json_cpp {
         bool load(const std::string &);
         bool save(const std::string &) const;
         std::string to_json() const;
+        void from_json(const std::string &);
         friend std::istream & operator >> (std::istream &, Json_base &);
         friend std::ostream & operator << (std::ostream & , const Json_base &);
         friend std::string & operator >> (std::string &, Json_base &);
