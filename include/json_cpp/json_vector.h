@@ -66,11 +66,11 @@ namespace json_cpp {
             return index_of(o) != -1;
         }
 
-        T get_item_at(int index) {
+        T get_item_at(unsigned int index) {
             return (*(this))[index];
         }
 
-        void set_item_at(int index, T &item) {
+        void set_item_at(unsigned int index, T &item) {
             if (index >= this->size()) {
                 throw std::runtime_error("key " + std::to_string(index) + " not found.");
             }

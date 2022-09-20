@@ -28,7 +28,6 @@ set (json_cpp_files
 
 add_library(json-cpp ${json_cpp_files})
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
 set_target_properties(json-cpp
         PROPERTIES
@@ -36,12 +35,6 @@ set_target_properties(json-cpp
         CXX_STANDARD_REQUIRED On
         CXX_EXTENSIONS Off
         VERSION ${PROJECT_VERSION})
-
-if(MSVC)
-    target_compile_options(json-cpp PRIVATE /W4)
-else(MSVC)
-    target_compile_options(json-cpp PRIVATE -Wall -Wextra -pedantic)
-endif(MSVC)
 
 target_include_directories(json-cpp
         SYSTEM INTERFACE
@@ -51,6 +44,8 @@ target_include_directories(json-cpp
 target_include_directories(json-cpp
         PRIVATE
         include)
+
+target_compile_options(json-cpp PRIVATE -Wextra -pedantic -Wall -fPIC)
 
 ###
 ### TESTS
