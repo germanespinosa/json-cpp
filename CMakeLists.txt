@@ -9,7 +9,6 @@ project(json-cpp
 
 find_package(Dependencies)
 
-add_dependency_package(CURL)
 
 install_dependency(https://github.com/HowardHinnant/date)
 
@@ -24,18 +23,12 @@ set (json_cpp_files
         src/json_util.cpp
         src/json_builder.cpp
         src/json_object.cpp
-        src/json_web_request.cpp
-        src/json_web_response.cpp
         src/json_dictionary.cpp
         )
 
 add_library(json-cpp ${json_cpp_files})
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -fPIC")
-
-target_link_libraries(json-cpp
-        PUBLIC
-        ${CURL_LIBRARIES})
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
 set_target_properties(json-cpp
         PROPERTIES
@@ -86,6 +79,3 @@ install(EXPORT Json-cppConfig
         EXPORT_LINK_INTERFACE_LIBRARIES)
 
 export(TARGETS json-cpp FILE Json-cppConfig.cmake)
-
-install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Json-cpp/Json-cppConfig.cmake \"find_package(CURL REQUIRED)\n\") ")
-install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"set(JSON-CPP_LIBRARIES json-cpp ${CURL_LIBRARIES})\n\") ")
