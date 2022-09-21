@@ -67,10 +67,10 @@ namespace json_cpp {
             (*(this))[index] = item;
         }
 
-        Json_vector<T> reversed() {
+        Json_vector<T> reversed() const {
             Json_vector<T> r(this->size());
             size_t index = this->size();
-            for(auto &i:(*this)){
+            for(const auto &i:(*this)){
                 r[--index] = i;
             }
             return r;
