@@ -1,5 +1,4 @@
 #include <json_cpp/json_wrapper.h>
-#include<span>
 namespace json_cpp {
     template<class T>
     struct Json_vector : Json_base, std::vector<T> {
@@ -9,15 +8,6 @@ namespace json_cpp {
         }
         Json_vector (size_t s, T e): std::vector<T>(s,e) {
 
-        }
-        const std::span<T> slice(unsigned int b, unsigned int e) const {
-            if (b > e) throw std::logic_error("beginning index larger than end index");
-            auto v = (std::vector<T> *)this;
-            const std::span<T> s(*v);
-            return s.subspan(b, e-b);
-        }
-        const std::span<T> slice(unsigned int e) const {
-            return this->slice(0,e);
         }
         void json_parse(std::istream &i) override {
             if constexpr (std::is_default_constructible<T>::value) {

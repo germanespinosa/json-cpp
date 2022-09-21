@@ -250,19 +250,6 @@ TEST_CASE("bool list"){
     CHECK(r==json);
 }
 
-TEST_CASE("list slice"){
-    Json_vector<int> v;
-    for (int i=0;i<100; i++){
-        v.push_back(i+100);
-    }
-    string s1;
-    s1 << v.slice(20);
-    string s2;
-    s2 << v.slice(20,30);
-    CHECK (s1 == "[100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119]");
-    CHECK (s2 == "[120,121,122,123,124,125,126,127,128,129]");
-}
-
 TEST_CASE("object list"){
     struct Test_json_object: Json_object {
         Test_json_object(){};
@@ -373,25 +360,6 @@ TEST_CASE("json object from char array"){
     CHECK(r2=="{\"i\":1,\"s\":\"hello\"}");
 }
 
-TEST_CASE("Uri load") {
-    Json_URI u1("https://www.google.com");
-    CHECK(u1.protocol == Json_URI::Protocol::https);
-    CHECK(u1.domain == "www.google.com");
-    CHECK(u1.query_string == "");
-    CHECK(u1.port == 443);
-    string url;
-    url = u1.url();
-    CHECK(url == "https://www.google.com:443/");
-
-    Json_URI u2("http://www.google.com:65/query123?123/1");
-    CHECK(u2.protocol == Json_URI::Protocol::http);
-    CHECK(u2.domain == "www.google.com");
-    CHECK(u2.query_string == "query123?123/1");
-    CHECK(u2.port == 65);
-    url = u2.url();
-    CHECK(url == "http://www.google.com:65/query123?123/1");
-}
-
 TEST_CASE("fix pointer"){
     struct Test_object : Json_object{
         Test_object():Json_object(){}
@@ -405,28 +373,6 @@ TEST_CASE("fix pointer"){
     stringstream o2;
     o2 << (*t2);
     CHECK(o2.str() == "{\"a\":10,\"b\":20}");
-}
-
-TEST_CASE("json_create"){
-    struct Test_obj : Json_object{
-        Json_object_members({
-                                Case_insensitive();
-                                Add_member(Member1);
-                                Add_member(Member2);
-                            })
-        string Member1;
-        int Member2{};
-    };
-    ;
-    string url ("https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/test.json");
-    auto test_obj = Json_create<Test_obj>(Json_web_get(url).get_stream());
-    CHECK(test_obj.Member1 == "value");
-    CHECK(test_obj.Member2 == 5);
-}
-
-TEST_CASE("check 404"){
-    string url ("https://bogus-url.com");
-    CHECK_THROWS(Json_web_get(url));
 }
 
 TEST_CASE("check needs quotes") {
