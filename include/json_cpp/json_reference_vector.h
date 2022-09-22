@@ -4,7 +4,7 @@
 namespace json_cpp {
     template <class T>
     struct Json_reference : Json_base{
-        Json_reference<T>(T &o) : _json_reference(o) {}
+        Json_reference(T &o) : _json_reference(o) {}
     protected:
         std::reference_wrapper<T> _json_reference;
     };
