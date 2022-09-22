@@ -2,16 +2,10 @@
 #include <json_cpp/json_util.h>
 #include <json_cpp/json_base64.h>
 
-
-//#define ESCAPED_PARSE_ERROR throw logic_error("escape sequence not implemented")
-//#define STRING_PARSE_ERROR throw logic_error("error converting to string")
-//#define INT_PARSE_ERROR throw logic_error("error converting to int")
-//#define DOUBLE_PARSE_ERROR throw logic_error("error converting to double")
-
-#define ESCAPED_PARSE_ERROR
-#define STRING_PARSE_ERROR
-#define INT_PARSE_ERROR
-#define DOUBLE_PARSE_ERROR
+#define ESCAPED_PARSE_ERROR throw logic_error("escape sequence not implemented")
+#define STRING_PARSE_ERROR throw logic_error("error converting to string")
+#define INT_PARSE_ERROR throw logic_error("error converting to int")
+#define DOUBLE_PARSE_ERROR throw logic_error("error converting to double")
 
 using namespace std;
 namespace json_cpp {
