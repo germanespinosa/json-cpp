@@ -52,7 +52,7 @@ target_include_directories(json-cpp
         PRIVATE
         include)
 
-target_compile_options(json-cpp PRIVATE -Wextra -pedantic -Wall)
+target_compile_options(json-cpp PRIVATE -Wextra -pedantic -Wall -fPIC)
 
 ###
 ### TESTS
