@@ -7,10 +7,17 @@ project(json-cpp
         DESCRIPTION "Json c++ library"
         LANGUAGES CXX)
 
-find_package(Dependencies)
+####
+#### DEPENDENCIES
+####
 
+if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/DependenciesConfig.cmake)
+    file(DOWNLOAD https://raw.githubusercontent.com/germanespinosa/dependencies/main/DependenciesConfig.cmake ${CMAKE_CURRENT_SOURCE_DIR}/DependenciesConfig.cmake)
+endif()
+set(Dependencies_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+find_package (Dependencies REQUIRED)
 
-install_dependency(https://github.com/HowardHinnant/date)
+install_dependency(https://github.com/HowardHinnant/date STATIC NO_BUILD)
 
 dependency_include(${dependencies_folder}/date/include include)
 
