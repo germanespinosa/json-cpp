@@ -17,7 +17,7 @@ project(json-cpp
 #set(Dependencies_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 find_package (Dependencies REQUIRED)
 
-install_dependency(https://github.com/HowardHinnant/date STATIC NO_BUILD)
+install_dependency(https://github.com/HowardHinnant/date)
 
 dependency_include(${dependencies_folder}/date/include include)
 
