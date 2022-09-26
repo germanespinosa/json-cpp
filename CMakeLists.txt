@@ -17,9 +17,11 @@ project(json-cpp
 #set(Dependencies_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 find_package (Dependencies REQUIRED)
 
-install_dependency(https://github.com/HowardHinnant/date NO_BUILD STATIC)
+install_dependency(https://github.com/HowardHinnant/date
+        NO_BUILD
+        PUBLIC)
 
-dependency_include(${dependencies_folder}/date/include include)
+dependency_include(${DEPENDENCIES_FOLDER}/date/include include)
 
 set (json_cpp_files
         src/json_cpp.cpp
@@ -58,7 +60,7 @@ target_compile_options(json-cpp PRIVATE -Wextra -pedantic -Wall -fPIC)
 ### TESTS
 ###
 
-install_dependency(https://github.com/germanespinosa/catch CatchTests STATIC)
+install_dependency(https://github.com/germanespinosa/catch CatchTests PUBLIC)
 test_library(json-cpp)
 
 ###
