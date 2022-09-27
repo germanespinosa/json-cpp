@@ -38,8 +38,6 @@ install_git_dependency( Date
         TARGET json-cpp
         INCLUDE_DIRECTORIES include )
 
-message( "HERE ${Date_FOLDER} ")
-
 set_target_properties( json-cpp
         PROPERTIES
         CXX_STANDARD 20
@@ -55,9 +53,7 @@ target_compile_options(json-cpp PRIVATE -Wextra -pedantic -Wall -fPIC)
 
 install_git_dependency( Catch
         https://github.com/germanespinosa/catch
-        CMAKE_PROJECT
-        PACKAGES
-            CatchTests )
+        ADD_SUBDIRECTORY)
 
 test_library(json-cpp)
 #
