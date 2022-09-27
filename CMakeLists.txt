@@ -17,7 +17,7 @@ project(json-cpp
 #set(Dependencies_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 find_package (Dependencies REQUIRED)
 
-install_git_dependency(
+install_git_dependency( Date
         https://github.com/HowardHinnant/date
         PUBLIC
         INCLUDE_DIRECTORIES
@@ -62,10 +62,11 @@ target_compile_options(json-cpp PRIVATE -Wextra -pedantic -Wall -fPIC)
 ### TESTS
 ###
 
-install_git_dependency( https://github.com/germanespinosa/catch
+install_git_dependency( Catch
+        https://github.com/germanespinosa/catch
         CMAKE_PROJECT
         PACKAGES
-        CatchTests )
+            CatchTests )
 
 test_library(json-cpp)
 
