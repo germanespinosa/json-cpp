@@ -11,17 +11,19 @@ project(json-cpp
 #### DEPENDENCIES
 ####
 
-#if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/DependenciesConfig.cmake)
-#    file(DOWNLOAD https://raw.githubusercontent.com/germanespinosa/dependencies/main/DependenciesConfig.cmake ${CMAKE_CURRENT_SOURCE_DIR}/DependenciesConfig.cmake)
+#if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/DependenciesConfig.cmake)
+#    file(DOWNLOAD https://raw.githubusercontent.com/germanespinosa/dependencies/main/DependenciesConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/DependenciesConfig.cmake)
 #endif()
-#set(Dependencies_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+#set(Dependencies_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 find_package (Dependencies REQUIRED)
 
-install_dependency(https://github.com/HowardHinnant/date
-        NO_BUILD
-        PUBLIC)
+install_git_dependency(
+        https://github.com/HowardHinnant/date
+        PUBLIC
+        INCLUDE_DIRECTORIES
+            include )
 
-dependency_include(${DEPENDENCIES_FOLDER}/date/include include)
+dependency_include(include)
 
 set (json_cpp_files
         src/json_cpp.cpp
