@@ -35,9 +35,10 @@ target_include_directories( json-cpp PUBLIC include)
 
 install_git_dependency( Date
         https://github.com/HowardHinnant/date
-        PUBLIC
         TARGET json-cpp
         INCLUDE_DIRECTORIES include )
+
+message( "HERE ${Date_FOLDER} ")
 
 set_target_properties( json-cpp
         PROPERTIES
@@ -46,28 +47,23 @@ set_target_properties( json-cpp
         CXX_EXTENSIONS Off
         VERSION ${PROJECT_VERSION})
 
-target_include_directories(json-cpp
-        SYSTEM INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>)
-
 target_compile_options(json-cpp PRIVATE -Wextra -pedantic -Wall -fPIC)
 
-####
-#### TESTS
-####
+###
+### TESTS
+###
+
+install_git_dependency( Catch
+        https://github.com/germanespinosa/catch
+        CMAKE_PROJECT
+        PACKAGES
+            CatchTests )
+
+test_library(json-cpp)
 #
-#install_git_dependency( Catch
-#        https://github.com/germanespinosa/catch
-#        CMAKE_PROJECT
-#        PACKAGES
-#            CatchTests )
-#
-#test_library(json-cpp)
-#
-####
-#### LIBRARY INSTALLATION
-####
+# ###
+# ### LIBRARY INSTALLATION
+# ###
 #
 #export(TARGETS json-cpp FILE JsonCppConfig.cmake)
 #
