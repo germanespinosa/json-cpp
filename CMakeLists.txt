@@ -17,14 +17,6 @@ project(json-cpp
 #set(Dependencies_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 find_package (Dependencies REQUIRED)
 
-install_git_dependency( Date
-        https://github.com/HowardHinnant/date
-        PUBLIC
-        INCLUDE_DIRECTORIES
-            include )
-
-dependency_include(include)
-
 set (json_cpp_files
         src/json_cpp.cpp
         src/json_base.cpp
@@ -39,8 +31,15 @@ set (json_cpp_files
 
 add_library(json-cpp ${json_cpp_files})
 
+target_include_directories( json-cpp PUBLIC include)
 
-set_target_properties(json-cpp
+install_git_dependency( Date
+        https://github.com/HowardHinnant/date
+        PUBLIC
+        TARGET json-cpp
+        INCLUDE_DIRECTORIES include )
+
+set_target_properties( json-cpp
         PROPERTIES
         CXX_STANDARD 20
         CXX_STANDARD_REQUIRED On
@@ -52,41 +51,37 @@ target_include_directories(json-cpp
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
 
-target_include_directories(json-cpp
-        PRIVATE
-        include)
+target_compile_options(json-cpp PRIVATE -Wextra -pedantic -Wall -fPIC)
 
-target_compile_options(json-cpp PRIVATE -Wextra -pedantic -Wall -fPIC -static)
-
-###
-### TESTS
-###
-
-install_git_dependency( Catch
-        https://github.com/germanespinosa/catch
-        CMAKE_PROJECT
-        PACKAGES
-            CatchTests )
-
-test_library(json-cpp)
-
-###
-### LIBRARY INSTALLATION
-###
-
-export(TARGETS json-cpp FILE JsonCppConfig.cmake)
-
-include(GNUInstallDirs)
-
-install(TARGETS json-cpp EXPORT Json-cppConfig
-        ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
-
-install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-
-install(EXPORT Json-cppConfig
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/Json-cpp
-        EXPORT_LINK_INTERFACE_LIBRARIES)
-
-export(TARGETS json-cpp FILE Json-cppConfig.cmake)
+####
+#### TESTS
+####
+#
+#install_git_dependency( Catch
+#        https://github.com/germanespinosa/catch
+#        CMAKE_PROJECT
+#        PACKAGES
+#            CatchTests )
+#
+#test_library(json-cpp)
+#
+####
+#### LIBRARY INSTALLATION
+####
+#
+#export(TARGETS json-cpp FILE JsonCppConfig.cmake)
+#
+#include(GNUInstallDirs)
+#
+#install(TARGETS json-cpp EXPORT Json-cppConfig
+#        ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#        LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#        RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
+#
+#install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+#
+#install(EXPORT Json-cppConfig
+#        DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/Json-cpp
+#        EXPORT_LINK_INTERFACE_LIBRARIES)
+#
+#export(TARGETS json-cpp FILE Json-cppConfig.cmake)
