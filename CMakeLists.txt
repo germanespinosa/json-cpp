@@ -62,7 +62,11 @@ target_compile_options(json-cpp PRIVATE -Wextra -pedantic -Wall -fPIC)
 ### TESTS
 ###
 
-install_dependency(https://github.com/germanespinosa/catch CatchTests PUBLIC)
+install_dependency(https://github.com/germanespinosa/catch
+        PACKAGES
+        CatchTests
+        PUBLIC)
+
 test_library(json-cpp)
 
 ###
