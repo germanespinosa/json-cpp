@@ -63,6 +63,7 @@ target_compile_options(json-cpp PRIVATE -Wextra -pedantic -Wall -fPIC)
 ###
 
 install_git_dependency( https://github.com/germanespinosa/catch
+        CMAKE_PROJECT
         PACKAGES
         CatchTests )
 
