@@ -9,6 +9,8 @@
 #define Json_needs_quotes(X) json_cpp::needs_quotes<std::remove_const<std::remove_reference<decltype(X)>::type>::type>(X)
 
 namespace json_cpp {
+    struct Json_vector;
+
     template <class T>
     bool needs_quotes(const T &){
         if constexpr (std::is_same_v<T, std::string>){
@@ -62,6 +64,21 @@ namespace json_cpp {
             }
             else {
                 o << r;
+            }
+        }
+
+
+        std::string get_type() {
+            if constexpr (std::is_same_v<T, std::string>) {
+                return "string";
+            } else if constexpr (std::is_same_v<T, bool>) {
+                return "boolean";
+            } else if constexpr (std::is_base_of<Json_vector, T>::value) {
+                return "array";
+            } else if constexpr (std::is_base_of<Json_base, T>::value) {
+                return "object";
+            } else {
+                return "number";
             }
         }
 
