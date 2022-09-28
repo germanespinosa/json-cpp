@@ -19,5 +19,8 @@ namespace json_cpp {
         virtual void after_load() const{};
         void json_parse(std::istream &) override;
         void json_write(std::ostream &) const override;
+        std::string json_type() const override {
+            return "object";
+        }
     };
 }

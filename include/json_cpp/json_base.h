@@ -6,6 +6,7 @@ namespace json_cpp {
     struct Json_base {
         virtual void json_parse(std::istream &);
         virtual void json_write(std::ostream &) const;
+        virtual std::string json_type() const {return "object";};
         bool load(const std::string &);
         bool save(const std::string &) const;
         std::string to_json() const;

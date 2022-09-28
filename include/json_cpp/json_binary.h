@@ -22,6 +22,9 @@ namespace json_cpp {
             Json_buffer jb = get_write_buffer();
             Json_util::write_value(o, jb);
         }
+        std::string json_type() const override {
+            return "string";
+        }
     private:
         Json_buffer buffer;
     };

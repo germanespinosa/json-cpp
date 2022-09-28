@@ -9,6 +9,9 @@ namespace json_cpp {
         Json_vector (size_t s, T e): std::vector<T>(s,e) {
 
         }
+        std::string json_type() const override {
+            return "array";
+        }
         void json_parse(std::istream &i) override {
             if constexpr (std::is_default_constructible<T>::value) {
                 if (Json_util::skip_blanks(i) != '[') throw std::logic_error("format error");
