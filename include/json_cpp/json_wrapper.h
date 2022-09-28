@@ -83,7 +83,7 @@ namespace json_cpp {
             return _value;
         }
 
-        void set_value(T &o) {
+        void set_value(T const &o) {
             _value = o;
         }
 
