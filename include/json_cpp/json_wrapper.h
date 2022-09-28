@@ -84,7 +84,8 @@ namespace json_cpp {
         }
 
         void set_value(T const &o) {
-            _value = o;
+            auto &r = _value.value().get();
+            r = o;
         }
 
         std::unique_ptr<Json_wrapped> get_unique_ptr() const override {
