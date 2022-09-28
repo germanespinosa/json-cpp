@@ -44,6 +44,7 @@ namespace json_cpp {
                 i >> r;
             }
         }
+
         void json_write(std::ostream &o) const override{
             const auto &r = _cvalue.get();
             if constexpr (std::is_same_v<T, std::string>) {
@@ -63,9 +64,15 @@ namespace json_cpp {
                 o << r;
             }
         }
+
+        const T &get_value() const  {
+            return _value;
+        }
+
         std::unique_ptr<Json_wrapped> get_unique_ptr() const override {
             return std::make_unique<Json_object_wrapper<T>>(*this);
         }
+
         std::unique_ptr<Json_wrapped> get_unique_ptr() override {
             return std::make_unique<Json_object_wrapper<T>>(*this);
         }
