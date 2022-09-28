@@ -31,11 +31,15 @@ set (json_cpp_files
 
 add_library(json-cpp ${json_cpp_files})
 
-target_include_directories( json-cpp PUBLIC include)
+include_directories(include)
+
+target_include_directories(json-cpp
+        SYSTEM INTERFACE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>)
 
 install_git_dependency( Date
         https://github.com/HowardHinnant/date
-        TARGET json-cpp
         INCLUDE_DIRECTORIES include )
 
 set_target_properties( json-cpp
