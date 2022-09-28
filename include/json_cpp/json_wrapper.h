@@ -83,6 +83,10 @@ namespace json_cpp {
             return _value;
         }
 
+        void set_value(T &o) {
+            _value = o;
+        }
+
         std::unique_ptr<Json_wrapped> get_unique_ptr() const override {
             return std::make_unique<Json_object_wrapper<T>>(*this);
         }
