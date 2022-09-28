@@ -20,7 +20,7 @@ namespace json_cpp {
         };
         std::vector<Json_member> members;
         bool case_sensitive = true;
-    private:
+    protected:
         int _find_member(const std::string &);
         void _check_mandatory_members(const std::vector<std::string> &);
         std::vector<std::string> _ignored_members;
