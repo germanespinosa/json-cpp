@@ -17,49 +17,88 @@ project(json-cpp
 #set(Dependencies_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 find_package (Dependencies REQUIRED)
 
-set (json_cpp_files
-        src/json_cpp.cpp
+
+set (json_cpp_core_files
         src/json_base.cpp
-        src/json_date.cpp
-        src/json_buffer.cpp
         src/json_base64.cpp
+        src/json_buffer.cpp
         src/json_util.cpp
         src/json_builder.cpp
         src/json_object.cpp
-        src/json_dictionary.cpp
         )
-
-add_library(json-cpp ${json_cpp_files})
-
-include_directories(include)
-
-target_include_directories(json-cpp
-        SYSTEM INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>)
-
-install_git_dependency( Date
-        https://github.com/HowardHinnant/date
-        INCLUDE_DIRECTORIES include )
-
-set_target_properties( json-cpp
-        PROPERTIES
-        CXX_STANDARD 20
-        CXX_STANDARD_REQUIRED On
-        CXX_EXTENSIONS Off
-        VERSION ${PROJECT_VERSION})
-
-target_compile_options(json-cpp PRIVATE -Wextra -pedantic -Wall -fPIC)
-
-###
-### TESTS
-###
 
 install_git_dependency( Catch
         https://github.com/germanespinosa/catch
         ADD_SUBDIRECTORY)
 
-test_library(json-cpp)
+include_directories(include)
+
+if (NOT ${BUILD_PYTHON_MODULE_ONLY})
+
+    set (json_cpp_files
+            ${json_cpp_core_files}
+            src/json_date.cpp
+            src/json_dictionary.cpp
+            )
+
+    install_git_dependency( Date
+            https://github.com/HowardHinnant/date
+            INCLUDE_DIRECTORIES include )
+
+    add_library(json-cpp ${json_cpp_files})
+
+    target_include_directories(json-cpp
+            SYSTEM INTERFACE
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+            $<INSTALL_INTERFACE:include>)
+
+    set_target_properties( json-cpp
+            PROPERTIES
+            CXX_STANDARD 20
+            CXX_STANDARD_REQUIRED On
+            CXX_EXTENSIONS Off
+            VERSION ${PROJECT_VERSION})
+
+    target_compile_options(json-cpp PRIVATE -Wextra -pedantic -Wall -fPIC)
+
+    ###
+    ### TESTS
+    ###
+    test_library(json-cpp)
+endif()
+
+if (NOT "${BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
+
+    install_git_dependency( Pybind11
+            https://github.com/pybind/pybind11
+            ADD_SUBDIRECTORY
+            INCLUDE_DIRECTORIES
+            include )
+
+    set(json_cpp_module_files
+            src/python/json_python_value.cpp
+            src/python/json_python_object.cpp
+            ${json_cpp_core_files})
+
+    pybind11_add_module(core src/python/json_python.cpp ${json_cpp_module_files})
+
+    target_compile_options(core PRIVATE -Wextra -pedantic -Wall -static)
+
+    string(TOLOWER ${CMAKE_BUILD_TYPE} LBT)
+
+    add_custom_command(TARGET core POST_BUILD
+            COMMAND "${CMAKE_COMMAND}" -E copy
+            "$<TARGET_FILE:core>"
+            "${CMAKE_CURRENT_SOURCE_DIR}/python/json-cpp2/build-${LBT}/$<TARGET_FILE_NAME:core>"
+            COMMENT "core output copied to ${CMAKE_CURRENT_SOURCE_DIR}/python/json-cpp2/build-${LBT}")
+
+    add_catch_test( python_module_tests
+            TEST_FILES
+            src/python/json_python_tests.cpp
+            SOURCE_FILES ${json_cpp_module_files}
+            INCLUDE_DIRECTORIES include)
+endif()
+
 #
 # ###
 # ### LIBRARY INSTALLATION

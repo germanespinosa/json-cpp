@@ -23,7 +23,6 @@ TEST_CASE("basic wrapper"){
 TEST_CASE("basic const wrapper bool"){
     const bool v = false;
     auto i = json_cpp::Json_object_wrapper<bool>(v);
-
     stringstream o;
     o << i;
     string r;
@@ -464,10 +463,10 @@ TEST_CASE("json_binary") {
 }
 
 TEST_CASE("json_date") {
-    cout << Json_date::now() << endl;
-    Json_date t;
-    "\"2021-08-05 22:41:26.682\"" >> t;
-    cout << t << endl;
+//    cout << Json_date::now() << endl;
+//    Json_date t;
+//    "\"2021-08-05 22:41:26.682\"" >> t;
+//    cout << t << endl;
 }
 
 struct Transformation : json_cpp::Json_object{

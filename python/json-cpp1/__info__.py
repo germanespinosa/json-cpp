@@ -23,7 +23,7 @@ def __install_requires__():
 
 
 def __url__():
-	return '' 
+	return 'https://github.com/germanespinosa/json-cpp'
 
 
 def __license__():
