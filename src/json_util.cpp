@@ -47,6 +47,20 @@ namespace json_cpp {
         return true;
     }
 
+    bool Json_util::read_null(istream &i) {
+        string v;
+        char c = skip_blanks(i);
+        while (isdigit(c) || isalpha(c)) {
+            v+=c;
+            discard(i);
+            c = skip_blanks(i);
+        }
+        if (v == "null") {
+            return true;
+        }
+        return false;
+    }
+
     std::string Json_util::read_string(istream &i) {
         char c;
         if (skip_blanks(i) != '"') STRING_PARSE_ERROR;
@@ -106,10 +120,14 @@ namespace json_cpp {
     }
 
     void Json_util::write_value(ostream &o,const bool &v) {
-        o << v;
+        o << (v?"true":"false");
     }
 
     void Json_util::write_value(ostream &o,const double &v) {
+        o << v;
+    }
+
+    void Json_util::write_value(ostream &o,const float &v) {
         o << v;
     }
 

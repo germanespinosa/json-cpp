@@ -9,6 +9,7 @@ namespace json_cpp {
         static char skip_blanks(std::istream &);
         static char read_escaped(std::istream &);
         static bool read_bool(std::istream &);
+        static bool read_null(std::istream &);
         static std::string read_string(std::istream &);
         static double read_double(std::istream &);
         static int read_int(std::istream &);
@@ -21,6 +22,7 @@ namespace json_cpp {
         static void read_value(std::istream &, Json_buffer &);
         static void write_value(std::ostream &, const bool &);
         static void write_value(std::ostream &, const double &);
+        static void write_value(std::ostream &, const float &);
         static void write_value(std::ostream &, const int &);
         static void write_value(std::ostream &, const unsigned int&);
         static void write_value(std::ostream &, const std::string &);

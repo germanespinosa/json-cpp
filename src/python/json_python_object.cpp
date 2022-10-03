@@ -1,12 +1,15 @@
-#include <json_cpp/python/json_python_object.h>
+#include <json_cpp/python/json_python.h>
+#include "json_cpp/python/json_python_object.h"
+
+
+using namespace std;
 
 namespace json_cpp {
 
     bool Python_object::operator == ( const Python_object &o ) const {
         if (members.size() != o.members.size() ) return false;
-        for (auto &m: members){
-            if (!o.members.contains(m.first)) return false;
-            if ( o.members.find(m.first)->second != m.second) return false;
+        for(auto &m:members) {
+            if (!o.members.contains(m.first) || o.members.find(m.first)->second != m.second) return false;
         }
         return true;
     }
@@ -21,24 +24,26 @@ namespace json_cpp {
         for (auto &m:members) {
             auto &name = m.first;
             auto &v = m.second;
-            switch (v.type) {
+            switch (v.value.type) {
+                case Python_type::Null:
+                    break;
                 case Python_type::Bool:
-                    Add_member_with_name(v.bool_value, v.mandatory, name);
+                    Add_member_with_name(v.value.bool_value, v.mandatory, name);
                     break;
                 case Python_type::Int:
-                    Add_member_with_name(v.int_value, v.mandatory, name);
+                    Add_member_with_name(v.value.int_value, v.mandatory, name);
                     break;
                 case Python_type::Float:
-                    Add_member_with_name(v.float_value, v.mandatory, name);
+                    Add_member_with_name(v.value.float_value, v.mandatory, name);
                     break;
                 case Python_type::String:
-                    Add_member_with_name(*(v.string_value.ptr), v.mandatory, name);
+                    Add_member_with_name(*(v.value.string_value.ptr), v.mandatory, name);
                     break;
                 case Python_type::Object:
-                    Add_member_with_name(*(v.object_value.ptr), v.mandatory, name);
+                    Add_member_with_name(*(v.value.object_value.ptr), v.mandatory, name);
                     break;
-                case Python_type::Array:
-                    Add_member_with_name(*(v.array_value.ptr), v.mandatory, name);
+                case Python_type::List:
+                    Add_member_with_name(*(v.value.list_value.ptr), v.mandatory, name);
                     break;
             }
         }
@@ -48,62 +53,53 @@ namespace json_cpp {
         for (auto &m:members) {
             auto &name = m.first;
             auto &v = m.second;
-            switch (v.type) {
+            switch (v.value.type) {
+                case Python_type::Null:
+                    break;
                 case Python_type::Bool:
-                    Add_member_with_name(v.bool_value, v.mandatory, name);
+                    Add_member_with_name(v.value.bool_value, v.mandatory, name);
                     break;
                 case Python_type::Int:
-                    Add_member_with_name(v.int_value, v.mandatory, name);
+                    Add_member_with_name(v.value.int_value, v.mandatory, name);
                     break;
                 case Python_type::Float:
-                    Add_member_with_name(v.float_value, v.mandatory, name);
+                    Add_member_with_name(v.value.float_value, v.mandatory, name);
                     break;
                 case Python_type::String:
-                    Add_member_with_name(*(v.string_value.ptr), v.mandatory, name);
+                    Add_member_with_name(*(v.value.string_value.ptr), v.mandatory, name);
                     break;
                 case Python_type::Object:
-                    Add_member_with_name(*(v.object_value.ptr), v.mandatory, name);
+                    Add_member_with_name(*(v.value.object_value.ptr), v.mandatory, name);
                     break;
-                case Python_type::Array:
-                    Add_member_with_name(*(v.array_value.ptr), v.mandatory, name);
+                case Python_type::List:
+                    Add_member_with_name(*(v.value.list_value.ptr), v.mandatory, name);
                     break;
             }
         }
     }
 
-    bool Python_object::add_bool_member(const std::string &name, bool mandatory) {
-        if (members.contains(name)) return false;
-        members[name] = Python_value(Python_type::Bool, mandatory);
-        return true;
+    Python_member_list Python_object::get_members_list() {
+        Python_member_list member_list;
+        for (auto &m:members) {
+            auto &md = member_list.emplace_back();
+            md.name = m.first;
+            md.mandatory = m.second.mandatory;
+            md.python_type = Python_value::python_type_to_string(m.second.value.type);
+        }
+        return member_list;
     }
 
-    bool Python_object::add_int_member(const std::string &name, bool mandatory) {
-        if (members.contains(name)) return false;
-        members[name] = Python_value(Python_type::Int, mandatory);
-        return true;
+    Python_member &Python_member::operator = (const Python_member &o) = default;
+
+    bool Python_member::operator == (const Python_member &o) const {
+        return o.mandatory == mandatory && o.value == value;
     }
 
-    bool Python_object::add_float_member(const std::string &name, bool mandatory) {
-        if (members.contains(name)) return false;
-        members[name] = Python_value(Python_type::Float, mandatory);
-        return true;
+    Python_member::Python_member(Python_type python_type, bool mandatory) : value(python_type), mandatory(mandatory) {
+
     }
 
-    bool Python_object::add_string_member(const std::string &name, bool mandatory) {
-        if (members.contains(name)) return false;
-        members[name] = Python_value(Python_type::String, mandatory);
-        return true;
-    }
-
-    bool Python_object::add_object_member(const std::string &name, bool mandatory) {
-        if (members.contains(name)) return false;
-        members[name] = Python_value(Python_type::Object, mandatory);
-        return true;
-    }
-
-    bool Python_object::add_array_member(const std::string &name, bool mandatory) {
-        if (members.contains(name)) return false;
-        members[name] = Python_value(Python_type::Array, mandatory);
-        return true;
+    bool Python_member_descriptor::operator==(const Python_member_descriptor &o) const {
+        return o.mandatory == mandatory && o.name == name && o.python_type == o.python_type;
     }
 }
