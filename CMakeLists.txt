@@ -77,9 +77,6 @@ if (NOT "${BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
 
     set(json_cpp_module_files
             src/python/json_descriptor.cpp
-            src/python/json_python_value.cpp
-            src/python/json_python_object.cpp
-            src/python/json_python_list.cpp
             ${json_cpp_core_files})
 
     pybind11_add_module(core src/python/json_python.cpp ${json_cpp_module_files})
