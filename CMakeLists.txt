@@ -36,7 +36,6 @@ install_git_dependency( Catch
 
 if (${BUILD_PYTHON_MODULE_ONLY})
 else()
-    message("hello")
     set (json_cpp_files
             ${json_cpp_core_files}
             src/json_date.cpp
