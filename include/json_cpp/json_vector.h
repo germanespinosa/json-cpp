@@ -14,8 +14,6 @@ namespace json_cpp {
             return "array";
         }
 
-        virtual inline T &new_item() { return this->template emplace_back(); }
-
         void json_parse(std::istream &i) override {
             if constexpr (std::is_default_constructible<T>::value) {
                 if (Json_util::skip_blanks(i) != '[') throw std::logic_error("format error");
@@ -23,14 +21,14 @@ namespace json_cpp {
                 Json_vector<T> &o = *this;
                 o.clear();
                 while ((Json_util::skip_blanks(i) != ']')) {
-                    auto &value = new_item();
+                    T value;
                     if constexpr (std::is_base_of<Json_base, T>::value) {
                         i >> value;
                     } else {
                         Json_object_wrapper<T> wrapped(value);
                         i >> wrapped;
                     }
-                    //o.push_back(value);
+                    o.push_back(value);
                     if (Json_util::skip_blanks(i) != ',') break;
                     Json_util::discard(i);
                 }
