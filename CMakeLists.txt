@@ -27,14 +27,16 @@ set (json_cpp_core_files
         src/json_object.cpp
         )
 
+include_directories(include)
+
 install_git_dependency( Catch
         https://github.com/germanespinosa/catch
         ADD_SUBDIRECTORY)
 
-include_directories(include)
 
-if (NOT ${BUILD_PYTHON_MODULE_ONLY})
-
+if (${BUILD_PYTHON_MODULE_ONLY})
+else()
+    message("hello")
     set (json_cpp_files
             ${json_cpp_core_files}
             src/json_date.cpp
@@ -64,11 +66,14 @@ if (NOT ${BUILD_PYTHON_MODULE_ONLY})
     ###
     ### TESTS
     ###
-    test_library(json-cpp)
+
+    add_catch_test( python_module_tests
+            TEST_FOLDER catchtests
+            LINK_LIBRARIES json-cpp
+            INCLUDE_DIRECTORIES include)
 endif()
 
-if (NOT "${BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
-
+if (NOT ${BUILD_AS_DEPENDENCY})
     install_git_dependency( Pybind11
             https://github.com/pybind/pybind11
             ADD_SUBDIRECTORY
