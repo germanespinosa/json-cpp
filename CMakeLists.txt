@@ -72,7 +72,8 @@ else()
             INCLUDE_DIRECTORIES include)
 endif()
 
-if (NOT ${BUILD_AS_DEPENDENCY})
+if (${BUILD_AS_DEPENDENCY})
+else()
     install_git_dependency( Pybind11
             https://github.com/pybind/pybind11
             ADD_SUBDIRECTORY
