@@ -11,12 +11,19 @@ project(json-cpp
 #### DEPENDENCIES
 ####
 
-#if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/DependenciesConfig.cmake)
-#    file(DOWNLOAD https://raw.githubusercontent.com/germanespinosa/dependencies/main/DependenciesConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/DependenciesConfig.cmake)
-#endif()
-#set(Dependencies_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-find_package (Dependencies REQUIRED)
+find_package (Dependencies QUIET)
 
+if (NOT ${Dependencies_FOUND})
+    if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/DependenciesConfig.cmake)
+        file(DOWNLOAD https://raw.githubusercontent.com/germanespinosa/dependencies/main/DependenciesConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/DependenciesConfig.cmake)
+    endif()
+    set(Dependencies_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+    find_package (Dependencies REQUIRED)
+endif()
+
+####
+#### END DEPENDENCIES
+####
 
 set (json_cpp_core_files
         src/json_base.cpp
@@ -32,7 +39,6 @@ include_directories(include)
 install_git_dependency( Catch
         https://github.com/germanespinosa/catch
         ADD_SUBDIRECTORY)
-
 
 if (${BUILD_PYTHON_MODULE_ONLY})
 else()
@@ -70,10 +76,32 @@ else()
             TEST_FOLDER catchtests
             LINK_LIBRARIES json-cpp
             INCLUDE_DIRECTORIES include)
+
+    if (NOT ${BUILD_AS_DEPENDENCY})
+        ###
+        ### LIBRARY INSTALLATION
+        ###
+
+        export(TARGETS json-cpp FILE JsonCppConfig.cmake)
+
+        include(GNUInstallDirs)
+
+        install(TARGETS json-cpp EXPORT Json-cppConfig
+                ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+        install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+        install(EXPORT Json-cppConfig
+                DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/Json-cpp
+                EXPORT_LINK_INTERFACE_LIBRARIES)
+
+        export(TARGETS json-cpp FILE Json-cppConfig.cmake)
+    endif()
 endif()
 
-if (${BUILD_AS_DEPENDENCY})
-else()
+if (NOT ${BUILD_AS_DEPENDENCY})
     install_git_dependency( Pybind11
             https://github.com/pybind/pybind11
             ADD_SUBDIRECTORY
@@ -96,31 +124,13 @@ else()
             "${CMAKE_CURRENT_SOURCE_DIR}/python/json-cpp2/build-${LBT}/$<TARGET_FILE_NAME:core>"
             COMMENT "core output copied to ${CMAKE_CURRENT_SOURCE_DIR}/python/json-cpp2/build-${LBT}")
 
+    ###
+    ### TESTS
+    ###
+
     add_catch_test( python_module_tests
             TEST_FILES
             src/python/json_python_tests.cpp
             SOURCE_FILES ${json_cpp_module_files}
             INCLUDE_DIRECTORIES include)
 endif()
-
-#
-# ###
-# ### LIBRARY INSTALLATION
-# ###
-#
-#export(TARGETS json-cpp FILE JsonCppConfig.cmake)
-#
-#include(GNUInstallDirs)
-#
-#install(TARGETS json-cpp EXPORT Json-cppConfig
-#        ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-#        LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-#        RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
-#
-#install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-#
-#install(EXPORT Json-cppConfig
-#        DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/Json-cpp
-#        EXPORT_LINK_INTERFACE_LIBRARIES)
-#
-#export(TARGETS json-cpp FILE Json-cppConfig.cmake)
