@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-
 set(CMAKE_CXX_STANDARD 20)
-
 project(json-cpp
         VERSION 2019.1.0
         DESCRIPTION "Json c++ library"
@@ -25,6 +23,10 @@ endif()
 #### END DEPENDENCIES
 ####
 
+if ("${BUILD_PYTHON_MODULE_ONLY}" STREQUAL "")
+    set (BUILD_PYTHON_MODULE_ONLY FALSE CACHE STRING "Builds only the python module")
+endif()
+
 set (json_cpp_core_files
         src/json_base.cpp
         src/json_base64.cpp
@@ -40,8 +42,7 @@ install_git_dependency( Catch
         https://github.com/germanespinosa/catch
         ADD_SUBDIRECTORY)
 
-if (${BUILD_PYTHON_MODULE_ONLY})
-else()
+if (NOT ${BUILD_PYTHON_MODULE_ONLY})
     set (json_cpp_files
             ${json_cpp_core_files}
             src/json_date.cpp

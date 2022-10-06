@@ -2,6 +2,9 @@
 #include <json_cpp/json_builder.h>
 #include <json_cpp/json_object.h>
 
+
+using namespace std;
+
 namespace json_cpp {
 
     void Json_descriptor::json_write(std::ostream &o) const {
@@ -67,7 +70,53 @@ namespace json_cpp {
         members_mandatory.emplace_back(member_mandatory);
     }
 
+    void Json_object_descriptor::set(const std::string &member_name, Json_descriptor &new_descriptor) {
+        int i = find(member_name);
+        if (i>=0) members_descriptor.replace(i, new_descriptor);
+        else add_member(member_name, new_descriptor, true);
+    }
+
+    int Json_object_descriptor::find(const std::string &member_name) {
+        for (unsigned int i = 0; i < members_descriptor.size(); i++) {
+            if (members_name[i] == member_name) return (int)i;
+        }
+        return -1;
+    }
+
+    bool Json_object_descriptor::contains(const std::string &member_name) {
+        return find(member_name) != -1;
+    }
+
+    void Json_object_descriptor::set(const std::string &member_name, bool value) {
+        auto m = Json_bool_descriptor(value);
+        set(member_name, m);
+    }
+
+    void Json_object_descriptor::set(const std::string &member_name, int value) {
+        auto m = Json_int_descriptor(value);
+        set(member_name, m);
+    }
+
+    void Json_object_descriptor::set(const std::string &member_name, float value) {
+        auto m = Json_float_descriptor(value);
+        set(member_name, m);
+    }
+
+    void Json_object_descriptor::set(const std::string &member_name, string value) {
+        auto m = Json_string_descriptor(value);
+        set(member_name, m);
+    }
+
+    Json_descriptor &Json_object_descriptor::get(const std::string member_name) {
+        auto i = find(member_name);
+        if (i>=0) return *members_descriptor[i];
+        throw runtime_error("member not found");
+    }
+
     void Json_list_descriptor::json_parse(std::istream &i) {
+        if (!item_descriptor) {
+            item_descriptor = new Json_variant_descriptor();
+        }
         if (Json_util::skip_blanks(i) != '[') throw std::logic_error("format error");
         Json_util::discard(i);
         value.clear();
@@ -96,6 +145,9 @@ namespace json_cpp {
     }
 
     Json_list_descriptor::~Json_list_descriptor() {
+        if (item_descriptor) {
+            delete item_descriptor;
+        }
     }
 
     Json_descriptor_container::~Json_descriptor_container() {
@@ -106,5 +158,95 @@ namespace json_cpp {
         clear();
         for (auto *i:o) push_back(i->new_item());
         return *this;
+    }
+
+    void Json_descriptor_container::replace(size_t index, Json_descriptor &new_descriptor) {
+        if (index >= size()) throw std::runtime_error("index not found.");
+        auto old_ptr = (*this)[index];
+        (*this)[index] = new_descriptor.new_item();
+        delete old_ptr;
+    }
+
+    Json_variant_descriptor::~Json_variant_descriptor() {
+        if (value){
+            delete value;
+            value = nullptr;
+        }
+    }
+
+    Json_variant_descriptor &Json_variant_descriptor::operator=(Json_variant_descriptor &jvd) {
+        if (value){
+            delete value;
+            value= nullptr;
+        }
+        value = jvd.value->new_item();
+        return *this;
+    }
+
+    Json_variant_descriptor &Json_variant_descriptor::operator=(Json_descriptor &jd) {
+        if (value){
+            delete value;
+            value = nullptr;
+        }
+        value = jd.new_item();
+        return *this;
+    }
+
+    void Json_variant_descriptor::json_write(ostream &o) const {
+        if (value){
+            value->json_write(o);
+        } else {
+            Json_null_descriptor().json_write(o);
+        }
+    }
+
+    void Json_variant_descriptor::json_parse(istream &i) {
+        if (value){
+            delete value;
+            value = nullptr;
+        }
+        auto c = Json_util::skip_blanks(i);
+        switch (c) {
+            case '[':
+                value = new Json_list_descriptor();
+                break;
+            case '{':
+                value = new Json_object_descriptor();
+                break;
+            case '"':
+                value = new Json_string_descriptor();
+                break;
+            case 't' or 'f':
+                value = new Json_bool_descriptor();
+                break;
+            case 'n':
+                value = new Json_null_descriptor();
+                break;
+            default:
+                if ((c >= '0' && c <= '9') || c == '-' || c == '.') {
+                    bool is_float = c == '.';
+                    string n;
+                    n += c;
+                    Json_util::discard(i);
+                    c = i.peek();
+                    while ((c >= '0' && c <= '9') || c == '.') {
+                        is_float = is_float || c == '.';
+                        n += c;
+                        Json_util::discard(i);
+                        c = i.peek();
+                    }
+                    if (is_float) {
+                        value = new Json_float_descriptor();
+                        value->from_json(n);
+                    } else {
+                        value = new Json_int_descriptor();
+                        value->from_json(n);
+                    }
+                    return;
+                } else {
+                    throw runtime_error("error parsing json");
+                }
+        }
+        value->json_parse(i);
     }
 }

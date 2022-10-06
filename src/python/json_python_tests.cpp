@@ -58,37 +58,39 @@ TEST_CASE("Json_object_descriptor"){
     Json_object_descriptor o;
     CHECK(o.to_json() == "{}");
     o.add_member("m1", v, true);
-    CHECK(o.to_json() == "{\"m1\":0}");
+    CHECK(o.to_json() == "{\"m1\":100}");
 
     Json_object_descriptor oo;
     Json_bool_descriptor b;
     oo.add_member("m2", b, true);
     o.add_member("m3",oo, true);
-    CHECK(o.to_json() == "{\"m1\":0,\"m3\":{\"m2\":false}}");
+    CHECK(o.to_json() == "{\"m1\":100,\"m3\":{\"m2\":false}}");
     o.from_json("{\"m1\":50,\"m3\":{\"m2\":true}}");
     CHECK(o.to_json() == "{\"m1\":50,\"m3\":{\"m2\":true}}");
+    o.set("m1",200);
+    CHECK(o.to_json() == "{\"m1\":200,\"m3\":{\"m2\":true}}");
 }
-//
-//TEST_CASE("Json_list_descriptor"){
-//    Json_bool_descriptor jb;
-//    jb.value = true;
-//    Json_int_descriptor ji;
-//    ji.value = 155;
-//    Json_float_descriptor jf;
-//    jf.value = 15.5;
-//    Json_string_descriptor js;
-//    js.value = "hello";
-//    Json_object_descriptor jo;
-//    jo.add_member("m0", jb, true);
-//    jo.add_member("m1", ji, true);
-//    jo.add_member("m2", jf, true);
-//    jo.add_member("m3", js, true);
-//    cout << jo << endl;
-//    Json_list_descriptor jl;
-//    jl.set_item_descriptor(jo);
-//    jl.from_json("[{\"m0\":true,\"m1\":155,\"m2\":15.5,\"m3\":\"hello\"},{\"m0\":false,\"m1\":35,\"m2\":5.5,\"m3\":\"bye\"}]");
-//    cout << jl << endl;
-//}
+
+TEST_CASE("Json_list_descriptor"){
+    Json_bool_descriptor jb;
+    jb.value = true;
+    Json_int_descriptor ji;
+    ji.value = 155;
+    Json_float_descriptor jf;
+    jf.value = 15.5;
+    Json_string_descriptor js;
+    js.value = "hello";
+    Json_object_descriptor jo;
+    jo.add_member("m0", jb, true);
+    jo.add_member("m1", ji, true);
+    jo.add_member("m2", jf, true);
+    jo.add_member("m3", js, true);
+    cout << jo << endl;
+    Json_list_descriptor jl;
+    jl.set_item_descriptor(jo);
+    jl.from_json("[{\"m0\":true,\"m1\":155,\"m2\":15.5,\"m3\":\"hello\"},{\"m0\":false,\"m1\":35,\"m2\":5.5,\"m3\":\"bye\"}]");
+    cout << jl << endl;
+}
 
 
 
