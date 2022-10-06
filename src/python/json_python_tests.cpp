@@ -110,7 +110,7 @@ TEST_CASE("Json_variant_descriptor"){
     cout << jv << endl;
     jv.from_json("{\"n\":{\"m0\":true,\"m1\":155,\"m2\":15.5,\"m3\":\"hello\"}}");
     cout << jv << endl;
-    jv.from_json("{\"n\":[{\"m0\":true,\"m1\":155,\"m2\":15.5,\"m3\":\"hello\",\"m4\":{\"a\":1,\"b\":true,\"c\":null}},{\"m0\":false,\"m1\":35,\"m2\":5.5,\"m3\":\"bye\"}]}");
+    jv.from_json("[[[{\"n\":[{\"m0\":true,\"m1\":155,\"m2\":15.5,\"m3\":\"hello\",\"m4\":{\"a\":1,\"b\":true,\"c\":null}},{\"m0\":false,\"m1\":35,\"m2\":5.5,\"m3\":\"bye\"}]}]]]");
     cout << jv << endl;
 }
 
