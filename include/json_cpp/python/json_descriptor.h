@@ -137,14 +137,33 @@ namespace json_cpp {
     };
 
     struct Json_variant_descriptor :Json_descriptor {
+        [[nodiscard]] Json_descriptor* new_item() const override {
+            auto *i = new Json_variant_descriptor();
+            *i  = *this;
+            return i;
+        };
         Json_descriptor *value{};
         Json_descriptor_type get_type() override {
             if (value) return value->get_type();
             return Json_descriptor_type::Null;
         }
+        void clear();
         ~Json_variant_descriptor() override;
-        Json_variant_descriptor &operator =(Json_variant_descriptor &);
-        Json_variant_descriptor &operator =(Json_descriptor &);
+        Json_variant_descriptor &operator =(const Json_variant_descriptor &);
+        Json_variant_descriptor &operator =(const Json_descriptor &);
+        void json_parse(std::istream &) override;
+        void json_write(std::ostream &) const override;
+    };
+
+    struct Json_variant_object_descriptor :Json_descriptor {
+        [[nodiscard]] Json_descriptor* new_item() const override {
+            auto *i = new Json_variant_object_descriptor();
+            *i  = *this;
+            return i;
+        };
+        ~Json_variant_object_descriptor() override = default;
+        Json_descriptor_container members_descriptor;
+        std::vector<std::string> members_name;
         void json_parse(std::istream &) override;
         void json_write(std::ostream &) const override;
     };

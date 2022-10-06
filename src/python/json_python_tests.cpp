@@ -87,12 +87,32 @@ TEST_CASE("Json_list_descriptor"){
     jo.add_member("m3", js, true);
     cout << jo << endl;
     Json_list_descriptor jl;
-    jl.set_item_descriptor(jo);
-    jl.from_json("[{\"m0\":true,\"m1\":155,\"m2\":15.5,\"m3\":\"hello\"},{\"m0\":false,\"m1\":35,\"m2\":5.5,\"m3\":\"bye\"}]");
-    cout << jl << endl;
+//    jl.set_item_descriptor(jo);
+//    jl.from_json("[{\"m0\":true,\"m1\":155,\"m2\":15.5,\"m3\":\"hello\"},{\"m0\":false,\"m1\":35,\"m2\":5.5,\"m3\":\"bye\"}]");
+//    cout << jl << endl;
 }
 
-
+TEST_CASE("Json_variant_descriptor"){
+    Json_variant_descriptor jv;
+    jv.from_json("1");
+    cout << jv << endl;
+    jv.from_json("10.5");
+    cout << jv << endl;
+    jv.from_json("true");
+    cout << jv << endl;
+    jv.from_json("false");
+    cout << jv << endl;
+    jv.from_json("\"false\"");
+    cout << jv << endl;
+    jv.from_json("null");
+    cout << jv << endl;
+    jv.from_json("[1,2,3]");
+    cout << jv << endl;
+    jv.from_json("{\"n\":{\"m0\":true,\"m1\":155,\"m2\":15.5,\"m3\":\"hello\"}}");
+    cout << jv << endl;
+    jv.from_json("{\"n\":[{\"m0\":true,\"m1\":155,\"m2\":15.5,\"m3\":\"hello\",\"m4\":{\"a\":1,\"b\":true,\"c\":null}},{\"m0\":false,\"m1\":35,\"m2\":5.5,\"m3\":\"bye\"}]}");
+    cout << jv << endl;
+}
 
 //TEST_CASE("Json_value_bool"){
 //    Python_value v(json_cpp::Python_type::Bool);
