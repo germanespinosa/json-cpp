@@ -463,10 +463,11 @@ TEST_CASE("json_binary") {
 }
 
 TEST_CASE("json_date") {
-//    cout << Json_date::now() << endl;
-//    Json_date t;
-//    "\"2021-08-05 22:41:26.682\"" >> t;
-//    cout << t << endl;
+    Json_date::set_local_time_zone_offset();
+    cout << "THIS SHOULD BE NOW " << Json_date::now() << endl;
+    Json_date t;
+    "\"2021-08-05 22:41:26.682\"" >> t;
+    cout << t << endl;
 }
 
 struct Transformation : json_cpp::Json_object{

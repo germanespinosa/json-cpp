@@ -73,10 +73,13 @@ if (NOT ${BUILD_PYTHON_MODULE_ONLY})
     ### TESTS
     ###
 
-    add_catch_test( python_module_tests
-            TEST_FOLDER catchtests
+    add_catch_test( json-cpp_tests
+            TEST_FILES
+            catchtests/json_tests.cpp
             LINK_LIBRARIES json-cpp
-            INCLUDE_DIRECTORIES include)
+            INCLUDE_DIRECTORIES
+            include
+            ${Date_Folder}/include)
 
     if (NOT ${BUILD_AS_DEPENDENCY})
         ###
