@@ -57,6 +57,37 @@ namespace json_cpp {
             return -1;
         }
 
+        template<typename FILTER>
+        Json_vector<T> filter(FILTER filter) const
+        {
+            Json_vector<T> filtered;
+            for (auto &i:*this) if (filter(i)) filtered.push_back(i);
+            return filtered;
+        }
+
+        template<typename CRITERIA>
+        int find_first_index(CRITERIA criteria) const
+        {
+            for (unsigned int i=0;i<this->size(); i++) if (criteria((*this)[i])) return (int)i;
+            throw std::runtime_error("no item matches the criteria");
+        }
+
+        template<typename CRITERIA>
+        T &find_first(CRITERIA criteria) const
+        {
+            for (auto &i:*this) if (filter(i)) return i;
+            throw std::runtime_error("no item matches the criteria");
+        }
+
+
+        template<class NEW_T, typename PROCESS>
+        Json_vector<NEW_T> process(PROCESS process) const
+        {
+            Json_vector<NEW_T> processed;
+            for (auto &i:*this) processed.push_back(process(i));
+            return processed;
+        }
+
         bool contains(const T &o) const {
             return index_of(o) != -1;
         }
