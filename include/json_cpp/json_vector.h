@@ -73,7 +73,7 @@ namespace json_cpp {
         }
 
         template<typename CRITERIA>
-        T &find_first(CRITERIA criteria) const
+        T &find_first(CRITERIA criteria)
         {
             for (auto &i:*this) if (criteria(i)) return i;
             throw std::runtime_error("no item matches the criteria");
