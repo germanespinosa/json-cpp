@@ -75,7 +75,14 @@ namespace json_cpp {
         template<typename CRITERIA>
         T &find_first(CRITERIA criteria)
         {
-            for (auto &i:*this) if (criteria(i)) return i;
+            for (T &i:*this) if (criteria(i)) return i;
+            throw std::runtime_error("no item matches the criteria");
+        }
+
+        template<typename CRITERIA>
+        T &find_first(CRITERIA criteria) const
+        {
+            for (const T &i:*this) if (criteria(i)) return i;
             throw std::runtime_error("no item matches the criteria");
         }
 
@@ -83,23 +90,23 @@ namespace json_cpp {
         Json_vector<NEW_T> process(PROCESS process) const
         {
             Json_vector<NEW_T> processed;
-            for (auto &i:*this) processed.push_back(process(i));
+            for (const T &i:*this) processed.push_back(process(i));
             return processed;
         }
 
         template<typename CRITERIA>
-        size_t count(CRITERIA criteria)
+        size_t count(CRITERIA criteria) const
         {
             size_t c = 0;
-            for (auto &i:*this) if (criteria(i)) c++;
+            for (const T &i:*this) if (criteria(i)) c++;
             return c;
         }
 
         template<typename CRITERIA>
-        float sum(CRITERIA criteria)
+        float sum(CRITERIA criteria) const
         {
             float s = 0;
-            for (auto &i:*this) s+= criteria(i);
+            for (const T &i:*this) s+= criteria(i);
             return s;
         }
 
