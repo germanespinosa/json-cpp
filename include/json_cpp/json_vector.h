@@ -79,13 +79,28 @@ namespace json_cpp {
             throw std::runtime_error("no item matches the criteria");
         }
 
-
         template<class NEW_T, typename PROCESS>
         Json_vector<NEW_T> process(PROCESS process) const
         {
             Json_vector<NEW_T> processed;
             for (auto &i:*this) processed.push_back(process(i));
             return processed;
+        }
+
+        template<typename CRITERIA>
+        size_t count(CRITERIA criteria)
+        {
+            size_t c = 0;
+            for (auto &i:*this) if (criteria(i)) c++;
+            return c;
+        }
+
+        template<typename CRITERIA>
+        float sum(CRITERIA criteria)
+        {
+            float s = 0;
+            for (auto &i:*this) s+= criteria(i);
+            return s;
         }
 
         bool contains(const T &o) const {
