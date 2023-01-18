@@ -80,7 +80,7 @@ namespace json_cpp {
         }
 
         template<typename CRITERIA>
-        T &find_first(CRITERIA criteria) const
+        const T &find_first(CRITERIA criteria) const
         {
             for (const T &i:*this) if (criteria(i)) return i;
             throw std::runtime_error("no item matches the criteria");
@@ -108,6 +108,32 @@ namespace json_cpp {
             float s = 0;
             for (const T &i:*this) s+= criteria(i);
             return s;
+        }
+
+        template<typename CRITERIA>
+        float max(CRITERIA criteria) const
+        {
+            bool first = true;
+            float m = 0;
+            for (const T &i:*this) {
+                auto s = criteria(i);
+                if (first || s>m) m=s;
+                first = false;
+            }
+            return m;
+        }
+
+        template<typename CRITERIA>
+        float min(CRITERIA criteria) const
+        {
+            bool first = true;
+            float m = 0;
+            for (const T &i:*this) {
+                auto s = criteria(i);
+                if (first || s<m) m=s;
+                first = false;
+            }
+            return m;
         }
 
         bool contains(const T &o) const {
