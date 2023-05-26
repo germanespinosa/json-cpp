@@ -4,6 +4,23 @@ from datetime import datetime
 import requests
 from os import path
 
+
+def json_parameters_function():
+    def inner(func):
+        def wrapper(json_object):
+            if type(json_object) is str:
+                json_object = JsonObject.load(json_object)
+            p = {}
+            for v in func.__code__.co_varnames:
+                if v in json_object.__dict__:
+                    p[v] = json_object.__dict__[v]
+                else:
+                    p[v] = None
+            return func(**p)
+        return wrapper
+    return inner
+
+
 class classorinstancemethod(classmethod):
 
     def __get__(self, instance, type_):

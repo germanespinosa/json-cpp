@@ -1,5 +1,5 @@
 def __module_version__():
-	return 1, 0, 25 
+	return 1, 0, 31 
 
 
 def __module_name__():
@@ -23,7 +23,7 @@ def __install_requires__():
 
 
 def __url__():
-	return 'https://github.com/germanespinosa/json-cpp'
+	return '' 
 
 
 def __license__():
@@ -60,5 +60,9 @@ def __root_folder__():
 
 def __description__():
 	return 'a better json library' 
+
+
+def __package_data__():
+	return {} 
 
 
