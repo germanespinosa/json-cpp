@@ -188,6 +188,15 @@ class JsonList(list):
         list.__init__(self, iterable)
         self.list_type = list_type
 
+    @staticmethod
+    def create_type(list_item_type: type, list_type_name: str = "") -> type:
+        def __init__(self):
+            JsonList.__init__(self, list_type=list_item_type)
+        if not list_type_name:
+            list_type_name = "Json_%s_list" % list_item_type.__name__
+        newclass = type(list_type_name, (JsonList,), {"__init__": __init__})
+        return newclass
+
     def _typeCheck(self, val):
         if self.list_type:
             if self.list_type is float and type(val) is int: #json ints can also be floats
