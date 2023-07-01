@@ -190,8 +190,8 @@ class JsonList(list):
 
     @staticmethod
     def create_type(list_item_type: type, list_type_name: str = "") -> type:
-        def __init__(self):
-            JsonList.__init__(self, list_type=list_item_type)
+        def __init__(self, iterable=None):
+            JsonList.__init__(self, iterable=iterable, list_type=list_item_type)
         if not list_type_name:
             list_type_name = "Json_%s_list" % list_item_type.__name__
         newclass = type(list_type_name, (JsonList,), {"__init__": __init__})
