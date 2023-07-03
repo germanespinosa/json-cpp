@@ -271,6 +271,19 @@ class JsonList(list):
                 nl.append(i)
         return nl
 
+    def filter(self, l):
+        nl = type(self)()
+        for i in self:
+            if l(i):
+                nl.append(i)
+        return nl
+
+    def process(self, l):
+        nl = JsonList()
+        for i in self:
+            nl.append(l(i))
+        return nl
+
     def copy(self):
         return type(self).parse(str(self))
 
