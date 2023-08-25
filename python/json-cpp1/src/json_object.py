@@ -181,12 +181,13 @@ class JsonObject:
 
 class JsonList(list):
 
-    def __init__(self, iterable=None, list_type=None):
+    def __init__(self, list_type=None, iterable=None, allow_empty: bool = False):
         iterable = list() if not iterable else iterable
         iter(iterable)
         map(self._typeCheck, iterable)
         list.__init__(self, iterable)
         self.list_type = list_type
+        self.allow_empty = allow_empty
 
     @staticmethod
     def create_type(list_item_type: type, list_type_name: str = "") -> type:
@@ -198,6 +199,8 @@ class JsonList(list):
         return newclass
 
     def _typeCheck(self, val):
+        if val is None and self.allow_empty:
+            return
         if self.list_type:
             if self.list_type is float and type(val) is int: #json ints can also be floats
                 val = float(val)
@@ -248,7 +251,7 @@ class JsonList(list):
         list.insert(self, i, val)
 
     def __str__(self):
-        return "[" + ",".join([json.dumps(x) if type(x) is str else str(x) for x in self]) + "]"
+        return "[" + ",".join([json.dumps(x) if type(x) is str else "null" if x is None else str(x) for x in self]) + "]"
 
     def __repr__(self):
         return str(self)
